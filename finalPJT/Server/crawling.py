@@ -1,7 +1,8 @@
-tag_list = ['mordern', 'natural', 'classic', 'industral', 'asia', 'provence', 'unique']
 import sys
 import time
 import csv
+import pandas as pd
+import os
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 from selenium import webdriver
@@ -64,44 +65,57 @@ def load_image(driver):
         except ElementNotInteractableException:
             break
 
-        print("Loaded " + str(image_number) + " images!")
+        # print("Loaded " + str(image_number) + " images!")
 
         image_number_previous = image_number
 
 
 def save_image_url(driver, writer):
-    print("Save image url")
-    for i in range(len(driver.find_elements(By.XPATH, "//div[@class='isv-r PNCib MSM1fd BUooTd']"))):
 
-        image_block = driver.find_elements(By.XPATH, "//div[@class='isv-r PNCib MSM1fd BUooTd']")[i]
+    print('len', len(driver.find_elements(By.XPATH, "//div[@class='isv-r PNCib MSM1fd BUooTd']")))
+    try: 
+        for i in range(len(driver.find_elements(By.XPATH, "//div[@class='isv-r PNCib MSM1fd BUooTd']"))):
+            image_block = driver.find_elements(By.XPATH, "//div[@class='isv-r PNCib MSM1fd BUooTd']")[i]
 
-        image_block.find_element(By.XPATH, ".//a[@class='wXeWr islib nfEiy']").click()
+            image_block.find_element(By.XPATH, ".//a[@class='wXeWr islib nfEiy']").click()
 
-        image_url_attribute = image_block.find_element(By.XPATH, ".//a[@class='wXeWr islib nfEiy']").get_attribute('href')
-        parsed = urlparse.urlparse(image_url_attribute)
+            image_url_attribute = image_block.find_element(By.XPATH, ".//a[@class='wXeWr islib nfEiy']").get_attribute('href')
+            parsed = urlparse.urlparse(image_url_attribute)
 
-        image_url = parse_qs(parsed.query)['imgurl'][0]
+            image_url = parse_qs(parsed.query)['imgurl'][0]
 
-        writer.writerow([i, image_url])
-        print(str(i) + ": " + image_url)
-
+            writer.writerow([i, image_url])
+            # print(str(i) + ": " + image_url)
+    except IndexError:
+        pass
 
 if __name__ == "__main__":
     opts = [opt for opt in sys.argv[1:] if opt.startswith("--")]
     args = [arg for arg in sys.argv[1:] if not arg.startswith("--")]
 
-    if "--keyword" in opts:
-        key_word = args[opts.index("--keyword")]
-    else:
-        raise Exception("Keyword not found")
+    # if "--keyword" in opts:
+    #     key_word = args[opts.index("--keyword")]
+    # else:
+    #     raise Exception("Keyword not found")
     if "--driver" in opts:
         driver_path = args[opts.index("--driver")]
     else:
         raise Exception("Driver not found")
 
-    file = open(key_word + '.csv', mode='w')
-    writer = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    tag_list = ['modern', 'natural', 'classic', 'industral', 'asia', 'provence', 'unique']
+    
+    for key_word in tag_list:
+        file = open(key_word + '.csv', mode='w')
+        writer = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-    driver = search(key_word, driver_path)
-    load_image(driver)
-    save_image_url(driver, writer)
+        driver = search(key_word + '+interior', driver_path)
+        load_image(driver)
+        save_image_url(driver, writer)
+
+    for theme in tag_list:
+        data = pd.read_csv(f'./theme/{theme}.csv')
+        data = data.iloc[:,1]
+        data = data.tolist()
+        for d in range(len(data)):
+            img_url = data[d]
+            os.system(f"curl {img_url} > theme/{theme}/{d}.jpg")
