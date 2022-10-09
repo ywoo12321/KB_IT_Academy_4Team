@@ -17,6 +17,6 @@ urlpatterns = [
     # 회원정보 업데이트
     # path('update/', views.update_user_info),
 
-    path('user/<str:user_id>', views.user_test),
-    path('prefer/<int:user_id>', views.prefer_test),
+    path('user/<user_id>', views.user_test),
+    path('prefer/<user_id>', views.prefer_test),
 ]
