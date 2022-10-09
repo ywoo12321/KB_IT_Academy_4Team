@@ -1,22 +1,25 @@
+from inspect import classify_class_attrs
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from unittest.util import _MAX_LENGTH
 import datetime
 # Create your models here.
 
 # AbstractUser에 기본적으로 id와 password가 있음
-class User(AbstractUser):
-    
+class Account(models.Model):
     # id(PK, index), username(로그인 id), pw(로그인 pw)
-    # 유저 id
-    user_id = models.CharField(max_length=10, unique=True, )
-    # 유저 비밀번호
-    password = models.CharField(max_length=10)
-    # 유저 주소
-    address = models.CharField(max_length=10)
-    # 유저의 닉네임
-    nickname = models.CharField(max_length=10)
-    # USERNAME_FIELD = 'userId'    
-    # Menu테이블과 1:n으로 연결 필요
+    user_id = models.CharField(help_text = "유저 id",max_length=10, primary_key = True, unique=True, blank=False, null=False, default = 'Nodata')
+    password = models.CharField(help_text='유저 비밀번호',max_length=10, blank=False, null=False, default = 'Nodata')
+    address = models.CharField(help_text='유저 주소',max_length=10, blank=False, null=False, default = 'Nodata')
+    nickname = models.CharField(help_text='유저 닉네임',max_length=10, unique=True, blank=False, null=False, default = 'Nodata')
 
-# userName이 AbstractUser에 기본 제공되어 duplicate column name: userName Error 발생!
-# createsuperuser 생성 시 default 값이 없으면 migrate가 잘 되어도 data가 들어가지 않는 이슈 발생.
+class Prefer(models.Model):
+    # unique가 keyword라서 앞에 prefer를 붙였습니다.
+    user_id = models.CharField(help_text='유저 id',max_length=10, unique=True, default = 'Nodata')
+    prefer_modern = models.IntegerField(help_text='모던 가중치',default=0)
+    prefer_natural = models.IntegerField(help_text='네츄럴 가중치',default=0)
+    prefer_classic = models.IntegerField(help_text='클래식 가중치',default=0)
+    prefer_industry = models.IntegerField(help_text='인더스트리 가중치',default=0)
+    prefer_asia = models.IntegerField(help_text='아시아 가중치',default=0)
+    prefer_provence = models.IntegerField(help_text='프로방스 가중치',default=0)
+    prefer_unique = models.IntegerField(help_text='유니크 가중치',default=0)
