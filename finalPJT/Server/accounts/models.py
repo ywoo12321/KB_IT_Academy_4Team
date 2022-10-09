@@ -15,7 +15,7 @@ class Account(models.Model):
 
 class Prefer(models.Model):
     # unique가 keyword라서 앞에 prefer를 붙였습니다.
-    user_id = models.CharField(help_text='유저 id',max_length=10, unique=True, default = 'Nodata')
+    user_id = models.ForeignKey(Account, related_name="account", on_delete=models.CASCADE, db_column='user_id', primary_key = True)
     prefer_modern = models.IntegerField(help_text='모던 가중치',default=0)
     prefer_natural = models.IntegerField(help_text='네츄럴 가중치',default=0)
     prefer_classic = models.IntegerField(help_text='클래식 가중치',default=0)
