@@ -4,24 +4,41 @@ from requests import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
-from .models import Lodging
+from django.db.models import Count
+from .models import Lodging, Like
 from .serializer import LodgingSerializer, SimpleLodgingSerializer
 
 # Create your views here.
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def person_recom(request, user_id):
-
     pass
+
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def basic_recom(request):
-    lodgings = get_list_or_404(Lodging)
-    # 10개씩 쪼개기
-    simpleserializer = SimpleLodgingSerializer(lodgings, many=True)
-    simpleserializerdata =simpleserializer.data
-    return JsonResponse({'data': simpleserializerdata[:10]}, json_dumps_params={'ensure_ascii': False}, status=200)
+    basic_recommendation = {}
+    # 인기있는 숙소
+    hot_list = (Like.objects.values('lodging_id').annotate(dcount=Count('lodging_id'))).order_by('-dcount')[:10]
+    hot_lodging = []
+    for h in range(10):
+        lodging_pk = hot_list[h]['lodging_id']
+        lodging = get_object_or_404(Lodging, pk=lodging_pk)
+        simple_serializer = SimpleLodgingSerializer(lodging)
+        hot_lodging.append(simple_serializer.data)
+    basic_recommendation['hot'] = hot_lodging
+    
+    # interior tag별 data 20개씩 추가
+    # !--- random 추가해야합니다 ---! 
+    interior = ["Modern", "Natural", "Classic", "Industrial", "Asia", "Provence", "Pop Art"]
+    for t in range(7):
+        tag_list = Lodging.objects.filter(tag=t)[:20]
+        simple_serializer = SimpleLodgingSerializer(tag_list, many=True)
+        basic_recommendation[interior[t]] = list(simple_serializer.data)
+    print(basic_recommendation)
+    return JsonResponse({'data':basic_recommendation}, json_dumps_params={'ensure_ascii': False}, status=200)
+
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -29,12 +46,23 @@ def lodging_detail(request, lodging_id):
     lodging = get_object_or_404(Lodging, pk=lodging_id)
     serializer = LodgingSerializer(lodging)
     # json으로 응답시 한글 깨짐 발생으로 인하여 ensure_ascii 사용
-    return JsonResponse({'data': serializer.data}, json_dumps_params={'ensure_ascii': False}, status=200)
+    return JsonResponse(serializer.data, json_dumps_params={'ensure_ascii': False}, status=200)
+
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def sub_lodging(request, lodging_id):
+    sametheme = []
+    lodging = get_object_or_404(Lodging, pk=lodging_id)
+    lod_tag = lodging.tag
+    log_add = lodging.lodging_address
+    {
+        "sametheme" : [숙소1, 숙소2, ...],
+        "sameloaction" : [숙소1, 숙소2, ...],
+    }
+    
     pass
+
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
