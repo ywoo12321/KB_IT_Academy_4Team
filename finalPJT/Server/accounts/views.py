@@ -16,10 +16,10 @@ from .models import Account, Prefer
 @permission_classes([AllowAny])
 def check_id(request, user_id):
     try:
-        Account.objects.get(user_id=user_id)
-        return JsonResponse({"isUnique":False})
+        return JsonResponse({"isUnique": not Account.objects.filter(user_id=user_id).exists()})
     except Account.DoesNotExist:
-        return JsonResponse({"isUnique":True})
+        # 존재하지 않는 경우에도 unique 이기 때문
+        return JsonResponse({"isUnique": True})
     
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -38,8 +38,10 @@ def login(request):
     if request.method=='POST':
         try:
             user_id = request.data['userid']
-            check = Account.objects.get(user_id=user_id)
-            if check.password == request.data['password']:
+            check = Account.objects.filter(user_id=user_id)
+            if len(check) == 0:
+                return JsonResponse({"code":200, "message":"Fail, 존재하지 않는 아이디"})
+            elif check[0].password == request.data['password']:
                 return JsonResponse({"code":200, "message":"Success 로그인 성공"})
             else:
                 return JsonResponse({"code":200, "message":"Fail, 비밀번호 불일치"})    

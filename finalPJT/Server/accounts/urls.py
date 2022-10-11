@@ -5,7 +5,7 @@ app_name = 'accounts'
 
 urlpatterns = [
     # 회원가입
-    # path('join/', views.join),
+    path('join/', views.join),
     
     # 로그인
     # path('api-token-auth/', obtain_jwt_token),
