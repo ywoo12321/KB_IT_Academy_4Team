@@ -8,5 +8,5 @@ class AccountSerializer(serializers.ModelSerializer):
 
 class PreferSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Account
+        model = Prefer
         fields = '__all__'

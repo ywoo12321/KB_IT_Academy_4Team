@@ -9,12 +9,12 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework import status
 
-from finalPJT.Server.accounts.serializers import AccountSerializer, PreferSerializer
+from .serializers import AccountSerializer, PreferSerializer
 from .models import Account, Prefer
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def is_unique(request, user_id):
+def check_id(request, user_id):
     user = Account.objects.get(user_id=user_id)
     if user is None:
         return JsonResponse({"isUnique":True})
@@ -33,18 +33,35 @@ def prefer_test(request, user_id):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-def join(request):
+def login(request):
     if request.method=='POST':
         user_id = request.data['userid']
-        # prefer = 
         check = get_objects(Account, pk=user_id)
         if check is None:
-            account_serializer = AccountSerializer(data=request.data)
-            account_serializer.save()
-            # prefer 정보를 어떻게 전달? 문자열로 전달?
-            if request.data['']
-            prefer_serializer = PreferSerializer(data=)
-        else : 
-            return JsonResponse({"code":200, "message":"Fail, 이미 존재한 아이디"})    
+            return JsonResponse({"code":200, "message":"Fail, 존재하지 않는 아이디"})
+        elif check.password == request.data['password']:
+            return JsonResponse({"code":200, "message":"Success 로그인 성공"})
+        else:
+            return JsonResponse({"code":200, "message":"Fail, 비밀번호 불일치"})    
     else:
         return JsonResponse({"code":200, "message":"Fail, 잘못된 요청"})
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def join(request):
+    pass
+    # if request.method=='POST':
+    #     user_id = request.data['userid']
+    #     # prefer = 
+    #     check = get_objects(Account, pk=user_id)
+    #     if check is None:
+    #         account_serializer = AccountSerializer(data=request.data)
+    #         account_serializer.save()
+    #         # prefer 정보를 어떻게 전달? 문자열로 전달?
+    #         if request.data['']
+    #         prefer_serializer = PreferSerializer(data=)
+    #     else : 
+    #         return JsonResponse({"code":200, "message":"Fail, 이미 존재한 아이디"})    
+    # else:
+    #     return JsonResponse({"code":200, "message":"Fail, 잘못된 요청"})
