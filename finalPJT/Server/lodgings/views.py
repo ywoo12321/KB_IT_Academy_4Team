@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
 from .models import Lodging
-from .seriralizer import LodgingSerializer, SimpleLodgingSerializer
+from .serializer import LodgingSerializer, SimpleLodgingSerializer
 
 # Create your views here.
 @api_view(['GET'])
