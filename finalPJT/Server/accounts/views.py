@@ -12,6 +12,8 @@ from rest_framework import status
 from .serializers import AccountSerializer, PreferSerializer
 from .models import Account, Prefer
 
+import json
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def check_id(request, user_id):
@@ -54,18 +56,30 @@ def login(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def join(request):
-    pass
-    # if request.method=='POST':
-    #     user_id = request.data['userid']
-    #     # prefer = 
-    #     check = get_objects(Account, pk=user_id)
-    #     if check is None:
-    #         account_serializer = AccountSerializer(data=request.data)
-    #         account_serializer.save()
-    #         # prefer 정보를 어떻게 전달? 문자열로 전달?
-    #         if request.data['']
-    #         prefer_serializer = PreferSerializer(data=)
-    #     else : 
-    #         return JsonResponse({"code":200, "message":"Fail, 이미 존재한 아이디"})    
-    # else:
-    #     return JsonResponse({"code":200, "message":"Fail, 잘못된 요청"})
+    if request.method=='POST':
+        try:
+            data = request.data
+            data['user_id'] = data['userid']
+            pf = {"user_id": data['user_id'],
+            "prefer_modern" : int(data['prefer'][0]),
+            "prefer_natural" : int(data['prefer'][1]),
+            "prefer_classic" : int(data['prefer'][2]),
+            "prefer_industry" : int(data['prefer'][3]),
+            "prefer_asia" : int(data['prefer'][4]),
+            "prefer_provence" : int(data['prefer'][5]),
+            "prefer_unique" : int(data['prefer'][6]),
+                }
+            del data['userid']
+            del data['prefer']
+            acSerializer= AccountSerializer(data=data)
+            if acSerializer.is_valid(raise_exception=True):
+                acSerializer.save()
+                pfSerializer = PreferSerializer(data=pf)
+                if pfSerializer.is_valid(raise_exception=True):
+                    pfSerializer.save()
+            return JsonResponse({"code":200, "message":"Success 회원가입 성공"}, json_dumps_params={'ensure_ascii': False}, status=200)
+        except Exception:
+            print(Exception)
+            return JsonResponse({"code":200, "message":"Fail 회원가입 실패"}, json_dumps_params={'ensure_ascii': False}, status=200)
+    else:
+        return JsonResponse({"code":200, "message":"잘못된 요청"}, json_dumps_params={'ensure_ascii': False}, status=200)
