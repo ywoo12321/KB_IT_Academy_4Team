@@ -15,5 +15,5 @@ urlpatterns = [
     path('is_unique/<str:user_id>/', views.check_id),
     
     # 회원정보 업데이트
-    # path('update/', views.update_user_info),
+    path('update', views.update_user_info),
 ]
