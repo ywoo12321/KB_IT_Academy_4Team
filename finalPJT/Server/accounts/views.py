@@ -15,10 +15,11 @@ from .models import Account, Prefer
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def check_id(request, user_id):
-    user = Account.objects.get(user_id=user_id)
-    if user is None:
+    try:
+        Account.objects.get(user_id=user_id)
+        return JsonResponse({"isUnique":False})
+    except Account.DoesNotExist:
         return JsonResponse({"isUnique":True})
-    return JsonResponse({"isUnique":False})
     
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -35,14 +36,15 @@ def prefer_test(request, user_id):
 @permission_classes([AllowAny])
 def login(request):
     if request.method=='POST':
-        user_id = request.data['userid']
-        check = get_objects(Account, pk=user_id)
-        if check is None:
+        try:
+            user_id = request.data['userid']
+            check = Account.objects.get(user_id=user_id)
+            if check.password == request.data['password']:
+                return JsonResponse({"code":200, "message":"Success 로그인 성공"})
+            else:
+                return JsonResponse({"code":200, "message":"Fail, 비밀번호 불일치"})    
+        except Account.DoesNotExist:
             return JsonResponse({"code":200, "message":"Fail, 존재하지 않는 아이디"})
-        elif check.password == request.data['password']:
-            return JsonResponse({"code":200, "message":"Success 로그인 성공"})
-        else:
-            return JsonResponse({"code":200, "message":"Fail, 비밀번호 불일치"})    
     else:
         return JsonResponse({"code":200, "message":"Fail, 잘못된 요청"})
 
