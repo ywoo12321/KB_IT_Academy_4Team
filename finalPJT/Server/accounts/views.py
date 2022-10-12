@@ -1,18 +1,10 @@
-from gc import get_objects
-from django.http import HttpResponse
 from django.http.response import JsonResponse
-from django.shortcuts import get_object_or_404, get_list_or_404
-from django.contrib.auth import get_user_model
-
-from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
-from rest_framework import status
 
 from .serializers import AccountSerializer, PreferSerializer
 from .models import Account, Prefer
-
-import json
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
