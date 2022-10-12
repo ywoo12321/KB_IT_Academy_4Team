@@ -96,13 +96,13 @@ def sub_lodging(request, lodging_id):
 @permission_classes([AllowAny])
 def search_lodging(request, keyward):
     tag_dic = {
-        "modern" :0,
-        "natural" :1,
-        "classic" :2,
-        "industry" :3,
-        "asia" :4,
-        "provence" :5,
-        "unique" :6
+        "modern": 0,
+        "natural": 1,
+        "classic": 2,
+        "industry": 3,
+        "asia": 4,
+        "provence": 5,
+        "unique": 6
     }
     result1 = Lodging.objects.filter(lodging_name__contains=keyward)
     result2 = Lodging.objects.filter(lodging_address__contains=keyward)
@@ -110,5 +110,5 @@ def search_lodging(request, keyward):
     if keyward in tag_dic:
         result3 = Lodging.objects.filter(tag=tag_dic[keyward])
         result = result.union(result3)
-    search = ",".join(map(lambda x: '\''+x.lodging_name+'\'', result))
-    return JsonResponse({'search': "[" + search + "]"}, json_dumps_params={'ensure_ascii': False}, status=200)
+    answer = SimpleLodgingSerializer(result, many=True).data
+    return JsonResponse({'data':answer}, json_dumps_params={'ensure_ascii': False}, status=200)

@@ -82,24 +82,11 @@ def update_user_info(request):
         try:
             data = request.data
             user_id = data['user_id'] = data['userid']
-            pf = {"user_id": data['user_id'],
-            "prefer_modern" : int(data['prefer'][0]),
-            "prefer_natural" : int(data['prefer'][1]),
-            "prefer_classic" : int(data['prefer'][2]),
-            "prefer_industry" : int(data['prefer'][3]),
-            "prefer_asia" : int(data['prefer'][4]),
-            "prefer_provence" : int(data['prefer'][5]),
-            "prefer_unique" : int(data['prefer'][6]),
-                }
             del data['userid']
-            del data['prefer']
             ac_object = Account.objects.filter(user_id=user_id)[0]
-            pf_object = Prefer.objects.filter(user_id=user_id)[0]
             acSerializer= AccountSerializer(ac_object, data=data)
-            pfSerializer = PreferSerializer(pf_object, data=pf)
-            if acSerializer.is_valid(raise_exception=True) and pfSerializer.is_valid(raise_exception=True):
+            if acSerializer.is_valid(raise_exception=True):
                 acSerializer.save()
-                pfSerializer.save()
             return JsonResponse({"code":200, "message":"Success 수정 성공"}, json_dumps_params={'ensure_ascii': False}, status=200)
         except Exception:
             return JsonResponse({"code":200, "message":"Fail 수정 실패"}, json_dumps_params={'ensure_ascii': False}, status=200)
