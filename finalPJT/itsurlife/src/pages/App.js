@@ -1,12 +1,12 @@
 import styled from "@emotion/styled";
-import theme from "./styles/theme";
+import theme from "../styles/theme";
 
 const App = () => {
   return (
     <NavBox>
       <p>
-        나만의
-        <br /> 감성숙소를 찾아주다
+        나만의ddd
+        <br /> 감성숙소를 찾아주다ㅇㅇ
       </p>
     </NavBox>
   );
