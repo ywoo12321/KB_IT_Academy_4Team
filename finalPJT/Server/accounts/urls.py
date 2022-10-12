@@ -5,7 +5,7 @@ app_name = 'accounts'
 
 urlpatterns = [
     # 회원가입
-    # path('join/', views.join),
+    path('join', views.join),
     
     # 로그인
     # path('api-token-auth/', obtain_jwt_token),
@@ -15,5 +15,5 @@ urlpatterns = [
     path('is_unique/<str:user_id>/', views.check_id),
     
     # 회원정보 업데이트
-    # path('update/', views.update_user_info),
+    path('update', views.update_user_info),
 ]
