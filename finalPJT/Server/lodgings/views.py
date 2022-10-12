@@ -35,7 +35,7 @@ def person_recom(request, user_id):
     else:
         pass
     # basic recommendation 추가
-    return HttpResponse("hi")
+    return JsonResponse(person_recommendation, json_dumps_params={'ensure_ascii': False}, status=200)
 
 
 # basic = top10 + tag interior(random)
