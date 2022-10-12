@@ -111,4 +111,4 @@ def search_lodging(request, keyward):
         result3 = Lodging.objects.filter(tag=tag_dic[keyward])
         result = result.union(result3)
     answer = SimpleLodgingSerializer(result, many=True).data
-    return JsonResponse({'data':answer}, json_dumps_params={'ensure_ascii': False}, status=200)
+    return JsonResponse({'search':answer}, json_dumps_params={'ensure_ascii': False}, status=200)

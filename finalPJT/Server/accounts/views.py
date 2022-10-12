@@ -34,15 +34,15 @@ def login(request):
             user_id = request.data['userid']
             check = Account.objects.filter(user_id=user_id)
             if len(check) == 0:
-                return JsonResponse({"code":200, "message":"Fail, 존재하지 않는 아이디"})
+                return JsonResponse({"message":"Fail, 존재하지 않는 아이디"}, json_dumps_params={'ensure_ascii': False}, status=200)
             elif check[0].password == request.data['password']:
-                return JsonResponse({"code":200, "message":"Success 로그인 성공"})
+                return JsonResponse({"message":"Success 로그인 성공"}, json_dumps_params={'ensure_ascii': False}, status=200)
             else:
-                return JsonResponse({"code":200, "message":"Fail, 비밀번호 불일치"})    
+                return JsonResponse({"message":"Fail, 비밀번호 불일치"}, json_dumps_params={'ensure_ascii': False}, status=200)
         except Account.DoesNotExist:
-            return JsonResponse({"code":200, "message":"Fail, 존재하지 않는 아이디"})
+            return JsonResponse({"message":"Fail, 존재하지 않는 아이디"}, json_dumps_params={'ensure_ascii': False}, status=200)
     else:
-        return JsonResponse({"code":200, "message":"Fail, 잘못된 요청"})
+        return JsonResponse({"message":"Fail, 잘못된 요청"}, json_dumps_params={'ensure_ascii': False}, status=200)
 
 
 @api_view(['POST'])
@@ -69,11 +69,11 @@ def join(request):
                 pfSerializer = PreferSerializer(data=pf)
                 if pfSerializer.is_valid(raise_exception=True):
                     pfSerializer.save()
-            return JsonResponse({"code":200, "message":"Success 회원가입 성공"}, json_dumps_params={'ensure_ascii': False}, status=200)
+            return JsonResponse({"message":"Success 회원가입 성공"}, json_dumps_params={'ensure_ascii': False}, status=200)
         except Exception:
-            return JsonResponse({"code":200, "message":"Fail 회원가입 실패"}, json_dumps_params={'ensure_ascii': False}, status=200)
+            return JsonResponse({"message":"Fail 유효하지 않습니다."}, json_dumps_params={'ensure_ascii': False}, status=200)
     else:
-        return JsonResponse({"code":200, "message":"잘못된 요청"}, json_dumps_params={'ensure_ascii': False}, status=200)
+        return JsonResponse({"message":"Fail 올바르지 않은 요청입니다."}, json_dumps_params={'ensure_ascii': False}, status=200)
 
 @api_view(['PUT'])
 @permission_classes([AllowAny])
@@ -87,8 +87,8 @@ def update_user_info(request):
             acSerializer= AccountSerializer(ac_object, data=data)
             if acSerializer.is_valid(raise_exception=True):
                 acSerializer.save()
-            return JsonResponse({"code":200, "message":"Success 수정 성공"}, json_dumps_params={'ensure_ascii': False}, status=200)
+            return JsonResponse({"message":"Success, 수정 성공"}, json_dumps_params={'ensure_ascii': False}, status=200)
         except Exception:
-            return JsonResponse({"code":200, "message":"Fail 수정 실패"}, json_dumps_params={'ensure_ascii': False}, status=200)
+            return JsonResponse({"message":"Fail, 수정 실패"}, json_dumps_params={'ensure_ascii': False}, status=200)
     else:
-        return JsonResponse({"code":200, "message":"잘못된 요청"}, json_dumps_params={'ensure_ascii': False}, status=200)
+        return JsonResponse({"message":"Fail, 잘못된 요청"}, json_dumps_params={'ensure_ascii': False}, status=200)
