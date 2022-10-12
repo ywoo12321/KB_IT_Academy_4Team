@@ -39,25 +39,20 @@ def sub_lodging(request, lodging_id):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def search_lodging(request, keyward):
-    answer = []
-    # 숙소 이름과 관련있을 때
-    contain_name = Lodging.objects.filter(lodging_name__icontains=keyward)
-    # 숙소 지역으로 검색시
-    contain_add = Lodging.objects.filter(lodging_address__icontains=keyward)
-    # 분위기로 검색시
-    if keyward=='모던' or (keyward.isapha()==True and keyward.lower=='mordern'):
-        contain_tag = Lodging.objects.filter(tag=0)
-        return Response(contain_tag)
-    elif keyward=='네츄럴' or (keyward.isapha()==True and keyward.lower=='natural'):
-        contain_tag = Lodging.objects.filter(tag=1)
-    elif keyward=='클래식' or (keyward.isapha()==True and keyward.lower=='classic'):
-        contain_tag = Lodging.objects.filter(tag=2)
-    elif keyward=='인더스트리얼' or (keyward.isapha()==True and keyward.lower=='industrial'):
-        contain_tag = Lodging.objects.filter(tag=3)
-    elif keyward=='아시아' or (keyward.isapha()==True and keyward.lower=='aisa'):
-        contain_tag = Lodging.objects.filter(tag=4)
-    elif keyward=='프로방스' or (keyward.isapha()==True and keyward.lower=='provence'):
-        contain_tag = Lodging.objects.filter(tag=5)
-    elif keyward=='팝아트' or (keyward.isapha()==True and keyward.lower=='popart'):
-        contain_tag = Lodging.objects.filter(tag=6)
-    
+    tag_dic = {
+        "modern" :0,
+        "natural" :1,
+        "classic" :2,
+        "industry" :3,
+        "asia" :4,
+        "provence" :5,
+        "unique" :6
+    }
+    result1 = Lodging.objects.filter(lodging_name__contains=keyward)
+    result2 = Lodging.objects.filter(lodging_address__contains=keyward)
+    result = result1.union(result2)
+    if keyward in tag_dic:
+        result3 = Lodging.objects.filter(tag=tag_dic[keyward])
+        result = result.union(result3)
+    search = ",".join(map(lambda x: '\''+x.lodging_name+'\'', result))
+    return JsonResponse({'search': "[" + search + "]"}, json_dumps_params={'ensure_ascii': False}, status=200)
