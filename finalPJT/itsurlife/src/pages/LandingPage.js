@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import theme from "../styles/theme";
+import MainPage from "./SubPage";
 import Landing1 from "../images/Landing1.png";
 import Landing2 from "../images/Landing2.png";
 import Landing3 from "../images/Landing3.png";
@@ -22,14 +23,13 @@ const LandingPage = () => {
           <RightTextBox>
             <p className="bold">
               나만의
-              <br /> 감성숙소를 찾아주다
+              <br />
+              감성숙소를 찾아주다
+            </p>
+            <p className="btn">
+              <a href="/SubPage">둘러보기</a>
             </p>
           </RightTextBox>
-          <GoToMainBtn>
-            <div className="first">
-              <p>둘러보기</p>
-            </div>
-          </GoToMainBtn>
         </RightBox>
       </WhiteBox>
       <YellowBox>
@@ -137,14 +137,18 @@ const BigImageBox = styled.div`
   height: 100vh;
 `;
 const RightBox = styled.div`
+  display: block;
   display: flex;
   flex-direction: column;
+  //   align-items: right;
+  justify-content: right;
 `;
 const RightTextBox = styled.div`
   width: 800px;
   height: 280px;
   margin-top: 654px;
   margin-right: 76px;
+  margin-bottom: 0px;
   text-align: right;
   & > .bold {
     margin: 0px;
@@ -158,19 +162,25 @@ const RightTextBox = styled.div`
     font-size: ${theme.font_size.h2};
     color: ${theme.color.gray};
   }
+  & > .btn {
+    margin-top: 20px;
+    margin-left: 687px;
+    cursor: pointer;
+    width: 115px;
+    height: 32px;
+    font-family: ${theme.font_family.N};
+    font-size: ${theme.font_size.h2};
+    color: ${theme.color.gray};
+  }
 `;
 const GoToMainBtn = styled.div`
-  & > .first {
-    margin-top: 20px;
-    margin-bottom: 158px;
-    margin-right: 76px;
-    text-align: right;
-    & > p {
-      font-family: ${theme.font_family.N};
-      font-size: ${theme.font_size.h2};
-      color: ${theme.color.gray};
-    }
-  }
+  cursor: pointer;
+  width: 115px;
+  height: 32px;
+  text-align: right;
+  font-family: ${theme.font_family.N};
+  font-size: ${theme.font_size.h2};
+  color: ${theme.color.gray};
 `;
 const SecondLeftBox = styled.div`
   width: 603px;
