@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import theme from "../styles/theme";
-import MainPage from "./SubPage";
+import { Link } from "react-router-dom";
 import Landing1 from "../images/Landing1.png";
 import Landing2 from "../images/Landing2.png";
 import Landing3 from "../images/Landing3.png";
@@ -11,6 +11,7 @@ import Landing7 from "../images/Landing7.png";
 import Landing8 from "../images/Landing8.png";
 import Landing9 from "../images/Landing9.png";
 import Landing10 from "../images/Landing10.png";
+import Footer from "../components/Footer";
 
 const LandingPage = () => {
   return (
@@ -26,8 +27,11 @@ const LandingPage = () => {
               <br />
               감성숙소를 찾아주다
             </p>
+
             <p className="btn">
-              <a href="/SubPage">둘러보기</a>
+              <Link to="/mainPage" style={{ color: "inherit", textDecoration: "inherit" }}>
+                둘러보기
+              </Link>
             </p>
           </RightTextBox>
         </RightBox>
@@ -87,10 +91,17 @@ const LandingPage = () => {
       </ForthYellowBox>
       <LastBox>
         <LastTextBox>
-          <p>지금 바로 취향 찾으러 가기</p>
+          <p>
+            <Link to="/mainPage" style={{ color: "inherit", textDecoration: "inherit" }}>
+              지금 바로 취향 찾으러 가기
+            </Link>
+          </p>
         </LastTextBox>
-        <img src={Landing10} width="144" height="167" alt="Landing10" />
+        <Link to="/mainPage" style={{ color: "inherit", textDecoration: "inherit" }}>
+          <img src={Landing10} width="144" height="167" alt="Landing10" />
+        </Link>
       </LastBox>
+      <Footer />
     </>
   );
 };
@@ -172,15 +183,6 @@ const RightTextBox = styled.div`
     font-size: ${theme.font_size.h2};
     color: ${theme.color.gray};
   }
-`;
-const GoToMainBtn = styled.div`
-  cursor: pointer;
-  width: 115px;
-  height: 32px;
-  text-align: right;
-  font-family: ${theme.font_family.N};
-  font-size: ${theme.font_size.h2};
-  color: ${theme.color.gray};
 `;
 const SecondLeftBox = styled.div`
   width: 603px;

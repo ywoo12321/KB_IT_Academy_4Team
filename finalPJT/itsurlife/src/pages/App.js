@@ -1,14 +1,16 @@
-import styled from "@emotion/styled";
-import theme from "../styles/theme";
+import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LandingPage from "./LandingPage";
-import Footer from "../components/Footer";
+import MainPage from "./MainPage";
 
 const App = () => {
   return (
-    <>
-      <LandingPage />
-      <Footer />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route exact path="/" element={<LandingPage />} />
+        <Route path="/mainPage" element={<MainPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
