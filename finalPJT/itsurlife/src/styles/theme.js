@@ -3,6 +3,7 @@ const theme = {
     main: "#000000",
     whiteFont: "#FFFFFF",
     point: "#E5E3D6",
+    footerColor: "#7097A8",
     gray: "rgba(82, 79, 74, 0.8)",
   },
   font_size: {

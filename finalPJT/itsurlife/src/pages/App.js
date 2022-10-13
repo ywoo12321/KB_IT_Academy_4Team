@@ -1,20 +1,15 @@
 import styled from "@emotion/styled";
 import theme from "../styles/theme";
 import LandingPage from "./LandingPage";
+import Footer from "../components/Footer";
 
 const App = () => {
   return (
     <>
       <LandingPage />
-      <NavBox />
+      <Footer />
     </>
   );
 };
 
 export default App;
-
-const NavBox = styled.div`
-  width: 1920px;
-  height: 79px;
-  background-color: #7097a8;
-`;

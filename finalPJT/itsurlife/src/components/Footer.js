@@ -22,16 +22,15 @@ export default Footer;
 const FooterBox = styled.div`
   width: 100%;
   height: 80px;
-  .foot {
+  & > .foot {
     display: flex;
     align-items: center;
-    background-color: ${theme.color.point};
-  }
-
-  & .foot > p {
-    padding-left: 22px;
-    color: ${theme.color.whiteFont};
-    font-family: ${theme.font_family.N};
-    font-size: ${theme.font_size.body2};
+    background-color: ${theme.color.footerColor};
+    & > p {
+      padding-left: 22px;
+      color: ${theme.color.whiteFont};
+      font-family: ${theme.font_family.N};
+      font-size: ${theme.font_size.body2};
+    }
   }
 `;
