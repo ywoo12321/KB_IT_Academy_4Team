@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     # Local apps
     'accounts',
     'lodgings',
+    'mypage',
 
     # Thrid party apps
     'rest_framework',
