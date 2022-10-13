@@ -30,13 +30,15 @@ export default LandingPage;
 const FirstBox = styled.div`
   width: 1920px;
   height: 1080px;
+  display: block;
   display: flex;
+  flex-direction: column;
   flex-direction: row;
   justify-content: space-between;
 `;
 const BigImageBox = styled.div`
   width: 864px;
-  height: 1080px;
+  height: 100vh;
 `;
 const FirstRightBox = styled.div`
   display: flex;
