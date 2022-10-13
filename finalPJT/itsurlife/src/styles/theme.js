@@ -2,7 +2,8 @@ const theme = {
   color: {
     main: "#000000",
     whiteFont: "#FFFFFF",
-    point: "#DCFC73",
+    point: "#E5E3D6",
+    gray: "rgba(82, 79, 74, 0.8)",
   },
   font_size: {
     tittle: "5.625rem",
