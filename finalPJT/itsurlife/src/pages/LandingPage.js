@@ -13,6 +13,7 @@ import Landing8 from "../images/Landing8.png";
 import Landing9 from "../images/Landing9.png";
 import Landing10 from "../images/Landing10.png";
 import Footer from "../components/Footer";
+import NavBar from "../components/NavBar";
 
 const LandingPage = () => {
   const animatedItemDown1 = useScrollFadeIn("down", "1", "0");
@@ -34,6 +35,7 @@ const LandingPage = () => {
 
   return (
     <>
+      <NavBar />
       <WhiteBox>
         <BigImageBox>
           <img src={Landing1} width="864" height="1080" alt="Landing1" />
