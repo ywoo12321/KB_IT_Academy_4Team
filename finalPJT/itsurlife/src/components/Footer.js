@@ -19,7 +19,7 @@ const Footer = () => {
 
 export default Footer;
 
-const FooterBox = styled.div`
+const FooterBox = styled.footer`
   width: 100%;
   height: 80px;
   & > .foot {
