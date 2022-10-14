@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import theme from "../styles/theme";
+import useScrollFadeIn from "../components/useScrollFadeIn";
 import { Link } from "react-router-dom";
 import Landing1 from "../images/Landing1.png";
 import Landing2 from "../images/Landing2.png";
@@ -14,6 +15,23 @@ import Landing10 from "../images/Landing10.png";
 import Footer from "../components/Footer";
 
 const LandingPage = () => {
+  const animatedItemDown1 = useScrollFadeIn("down", "1", "0");
+  const animatedItemDown2 = useScrollFadeIn("down", "1", "0.5");
+  const animatedItemDown3 = useScrollFadeIn("down", "1", "0.7");
+  const animatedItemUp1 = useScrollFadeIn("up", "1", "0");
+  const animatedItemUp2 = useScrollFadeIn("up", "1", "0.2");
+  const animatedItemUp3 = useScrollFadeIn("up", "1", "0");
+  const animatedItemUp4 = useScrollFadeIn("up", "1", "0.2");
+  const animatedItemUp5 = useScrollFadeIn("up", "1", "0");
+  const animatedItemUp6 = useScrollFadeIn("up", "1", "0.2");
+  const animatedItemUp7 = useScrollFadeIn("up", "2", "0.2");
+  const animatedItemLeft1 = useScrollFadeIn("left", "1", "0");
+  const animatedItemLeft2 = useScrollFadeIn("left", "1", "0.2");
+  const animatedItemLeft3 = useScrollFadeIn("left", "1", "0");
+  const animatedItemLeft4 = useScrollFadeIn("left", "1", "0.1");
+  const animatedItemLeft5 = useScrollFadeIn("left", "1", "0.2");
+  const animatedItemLeft6 = useScrollFadeIn("left", "1", "0.3");
+
   return (
     <>
       <WhiteBox>
@@ -22,13 +40,13 @@ const LandingPage = () => {
         </BigImageBox>
         <RightBox>
           <RightTextBox>
-            <p className="bold">
+            <p className="bold" {...animatedItemUp1}>
               나만의
               <br />
               감성숙소를 찾아주다
             </p>
 
-            <p className="btn">
+            <p className="btn" {...animatedItemUp2}>
               <Link to="/mainPage" style={{ color: "inherit", textDecoration: "inherit" }}>
                 둘러보기
               </Link>
@@ -39,19 +57,21 @@ const LandingPage = () => {
       <YellowBox>
         <SecondLeftBox>
           <SecondTextBox>
-            <p className="bold">
+            <p className="bold" {...animatedItemUp3}>
               전국의
               <br /> 모든 감성숙소를
               <br /> 한눈에
             </p>
-            <p className="normal">찾아보기 힘들었던 감성숙소들을 모아놨어요.</p>
+            <p className="normal" {...animatedItemUp4}>
+              찾아보기 힘들었던 감성숙소들을 모아놨어요.
+            </p>
           </SecondTextBox>
         </SecondLeftBox>
         <SecondImageContainer>
-          <img src={Landing2} width="507" height="338" alt="Landing2" />
-          <img src={Landing3} width="507" height="338" alt="Landing3" />
-          <img src={Landing4} width="507" height="338" alt="Landing4" />
-          <img src={Landing5} width="507" height="338" alt="Landing5" />
+          <img src={Landing2} width="507" height="338" alt="Landing2" {...animatedItemLeft3} />
+          <img src={Landing3} width="507" height="338" alt="Landing3" {...animatedItemLeft4} />
+          <img src={Landing4} width="507" height="338" alt="Landing4" {...animatedItemLeft5} />
+          <img src={Landing5} width="507" height="338" alt="Landing5" {...animatedItemLeft6} />
         </SecondImageContainer>
       </YellowBox>
       <WhiteBox>
@@ -60,11 +80,11 @@ const LandingPage = () => {
         </BigImageBox>
         <RightBox>
           <RightTextBox>
-            <p className="bold">
+            <p className="bold" {...animatedItemUp5}>
               당신의
               <br /> 취향을 찾아주는 곳
             </p>
-            <p className="normal">
+            <p className="normal" {...animatedItemUp6}>
               여러가지 태그의 숙소들을 보며
               <br /> 여러분의 취향을 알아가봐요
             </p>
@@ -74,22 +94,24 @@ const LandingPage = () => {
       <ForthYellowBox>
         <ForthImageContainer>
           <ForthImageBox>
-            <img src={Landing7} width="549" height="367" alt="Landing7" />
-            <img src={Landing8} width="549" height="367" alt="Landing8" />
-            <img src={Landing9} width="549" height="367" alt="Landing9" />
+            <img src={Landing7} width="549" height="367" alt="Landing7" {...animatedItemDown1} />
+            <img src={Landing8} width="549" height="367" alt="Landing8" {...animatedItemDown2} />
+            <img src={Landing9} width="549" height="367" alt="Landing9" {...animatedItemDown3} />
           </ForthImageBox>
         </ForthImageContainer>
         <ForthBottomBox>
           <ForthTextBox>
-            <p className="bold">당신의 발견을 기다리고 있어요</p>
-            <p className="normal">
+            <p className="bold" {...animatedItemLeft1}>
+              당신의 발견을 기다리고 있어요
+            </p>
+            <p className="normal" {...animatedItemLeft2}>
               숲속에 숨겨진 감성부터
               <br /> 바다옆에 놓인 감성까지
             </p>
           </ForthTextBox>
         </ForthBottomBox>
       </ForthYellowBox>
-      <LastBox>
+      <LastBox {...animatedItemUp7}>
         <LastTextBox>
           <p>
             <Link to="/mainPage" style={{ color: "inherit", textDecoration: "inherit" }}>
