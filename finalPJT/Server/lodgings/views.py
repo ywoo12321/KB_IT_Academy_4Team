@@ -7,7 +7,17 @@ from django.db.models import Count
 from .models import Lodging, Like
 from .serializer import LodgingSerializer, SimpleLodgingSerializer
 from accounts.models import Prefer
+import pandas as pd
+from numpy import dot
+from numpy.linalg import norm
 
+def norm_cal(a,b):
+    return round(dot(a,b)/(norm(a)*norm(b)), 3)
+def cal(prefer):
+    df = pd.read_excel('./MSG.xlsx')
+    df['cosine'] = df.apply(lambda x:norm_cal(prefer, x), axis=1)
+    df = df.sort_values(by='cosine', ascending=False)
+    return df.head(20)
 
 # basic + personal recommend
 @api_view(['GET'])
