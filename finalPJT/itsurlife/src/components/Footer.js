@@ -21,8 +21,8 @@ export default Footer;
 
 const FooterBox = styled.footer`
   width: 100%;
-  height: 80px;
   & > .foot {
+    height: 80px;
     display: flex;
     align-items: center;
     background-color: ${theme.color.footerColor};
