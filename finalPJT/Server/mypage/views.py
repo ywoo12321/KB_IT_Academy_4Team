@@ -4,23 +4,24 @@ from django.http import  JsonResponse
 import pandas as pd
 import numpy as np
 from lodgings.models import Lodging, Like
+from datetime import datetime
 
 def like_line(like_list):
     df = like_list.copy()
+    dt_now = datetime.now().year * 12 + datetime.now().month
     df['total_time'] = df['like_date'].astype('datetime64').dt.year * 12 + df['like_date'].astype('datetime64').dt.month
-
-    top4 = df['total_time'].unique()
-    # top4 = np.append(top4, np.array([2022*12+12]), axis=0)
-    top4 = np.sort(top4)[::-1][:4]
-
+    temp = df[(df['total_time'] < dt_now) & (df['total_time'] > dt_now-4)]
+    top4 = np.sort(temp['total_time'].unique())[:4]
     dict_top4 = {}
     for i in top4:
-        temp = df[df['total_time']==i]['lodging_id_id'].value_counts()
         y = str(i // 12 if i % 12 != 0 else i // 12 - 1)
         m_temp = str(12 if i % 12 == 0 else i % 12)
         m = m_temp if len(m_temp) > 1 else '0'+m_temp
+        
+        temp_index = df[df['total_time']==i]['lodging_id_id'].value_counts().index
+        lodging_object = Lodging.objects.filter(id__in=temp_index)
         dict_top4[y+"-"+m] = \
-           [int(temp[i]) if i in temp.index else 0 for i in range(7)]
+           [len(lodging_object.filter(tag=i)) for i in range(7)]
     return dict_top4
 
 def like_rader(like_list):
@@ -60,10 +61,7 @@ def like_chart(request, user_id):
 @permission_classes([AllowAny])
 def like_list(request, user_id):
     user_like = pd.DataFrame(list(Like.objects.filter(user_id=user_id).values()))['lodging_id_id']
-    return JsonResponse({'like': list(user_like)}, json_dumps_params={'ensure_ascii': False}, status=200)
-    
-
-    
+    return JsonResponse({'like': list(map(int, user_like.unique()))}, json_dumps_params={'ensure_ascii': False}, status=200)
 
 
 
