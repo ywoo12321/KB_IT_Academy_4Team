@@ -5,6 +5,9 @@ const theme = {
     point: "#E5E3D6",
     footerColor: "#7097A8",
     gray: "rgba(82, 79, 74, 0.8)",
+    navColor: "#524F4A",
+    logoColor: "#E5E3D7",
+    logoPointColor: "#C6A477",
   },
   font_size: {
     tittle: "5.625rem",
