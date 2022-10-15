@@ -67,30 +67,40 @@ const NavBox = styled.nav`
   & > div > p > span {
     color: ${theme.color.logoPointColor};
   }
-
-  & > .navbar {
+  & > div {
     width: 100%;
     height: 80px;
     background-color: ${theme.color.navColor};
-
-    & > ul {
-      margin: 0;
-      list-style: none;
+  }
+  & > div > ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  & > div > ul > li > button {
+    line-height: 78px;
+    float: right;
+    margin-left: 26px;
+    margin-right: 29px;
+    border: none;
+    background-color: ${theme.color.navColor};
+    color: ${theme.color.whiteFont};
+    font-family: ${theme.font_family.T};
+    font-size: ${theme.font_size.h5};
+    cursor: pointer;
+  }
+  & > div > ul > li > button:hover {
+    color: ${theme.color.logoColor};
+  }
+  @media screen and (max-width: 768px) {
+    & > div > ul > li > button {
+      margin-left: 6px;
+      margin-right: 7px;
+      font-size: ${theme.font_size.body1};
     }
-    & > ul > li > button {
-      line-height: 78px;
-      float: right;
-      margin-left: 26px;
-      margin-right: 29px;
-      border: none;
-      background-color: ${theme.color.navColor};
-      color: ${theme.color.whiteFont};
-      font-family: ${theme.font_family.T};
-      font-size: ${theme.font_size.h5};
-      cursor: pointer;
-    }
-    & > ul > li > button:hover {
-      color: ${theme.color.logoColor};
+    & > div > p {
+      font-size: ${theme.font_size.subtitle1};
+      line-height: 130%;
     }
   }
 `;
