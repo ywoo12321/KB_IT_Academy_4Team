@@ -1,7 +1,10 @@
 import styled from "@emotion/styled";
 import theme from "../styles/theme";
+import { useState } from "react";
 
-const NavBar = () => {
+const Navbar = () => {
+  const [login, setLogin] = useState(false);
+
   return (
     <NavBox>
       <div className="navbar">
@@ -14,19 +17,37 @@ const NavBar = () => {
           <li style={{ float: "left" }}>
             <button type="button">Search</button>
           </li>
-          <li style={{ float: "left" }}>
-            <button type="button">Log-in</button>
-          </li>
-          <li style={{ float: "left" }}>
-            <button type="button">Sign-up</button>
-          </li>
+          {!login && (
+            <li style={{ float: "left" }}>
+              <button type="button" onClick={() => setLogin(true)}>
+                Log-in
+              </button>
+            </li>
+          )}
+          {login && (
+            <li style={{ float: "left" }}>
+              <button type="button" onClick={() => setLogin(false)}>
+                Log-out
+              </button>
+            </li>
+          )}
+          {!login && (
+            <li style={{ float: "left" }}>
+              <button type="button">Sign-up</button>
+            </li>
+          )}
+          {login && (
+            <li style={{ float: "left" }}>
+              <button type="button">My Page</button>
+            </li>
+          )}
         </ul>
       </div>
     </NavBox>
   );
 };
 
-export default NavBar;
+export default Navbar;
 
 const NavBox = styled.nav`
   & > div > p {
@@ -67,6 +88,9 @@ const NavBox = styled.nav`
       font-family: ${theme.font_family.T};
       font-size: ${theme.font_size.h5};
       cursor: pointer;
+    }
+    & > ul > li > button:hover {
+      color: ${theme.color.logoColor};
     }
   }
 `;
