@@ -21,16 +21,23 @@ export default Footer;
 
 const FooterBox = styled.footer`
   width: 100%;
-  height: 80px;
   & > .foot {
+    height: 80px;
     display: flex;
     align-items: center;
     background-color: ${theme.color.footerColor};
-    & > p {
-      padding-left: 22px;
-      color: ${theme.color.whiteFont};
-      font-family: ${theme.font_family.N};
-      font-size: ${theme.font_size.body2};
+  }
+  & > .foot > p {
+    margin: 0;
+    padding-left: 22px;
+    color: ${theme.color.whiteFont};
+    font-family: ${theme.font_family.N};
+    font-size: ${theme.font_size.body2};
+  }
+  @media screen and (max-width: 768px) {
+    & > .foot > p {
+      font-size: 12px;
+      padding-left: 11px;
     }
   }
 `;

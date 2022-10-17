@@ -1,7 +1,10 @@
 import styled from "@emotion/styled";
 import theme from "../styles/theme";
+import { useState } from "react";
 
-const NavBar = () => {
+const Navbar = () => {
+  const [login, setLogin] = useState(false);
+
   return (
     <NavBox>
       <div className="navbar">
@@ -14,19 +17,37 @@ const NavBar = () => {
           <li style={{ float: "left" }}>
             <button type="button">Search</button>
           </li>
-          <li style={{ float: "left" }}>
-            <button type="button">Log-in</button>
-          </li>
-          <li style={{ float: "left" }}>
-            <button type="button">Sign-up</button>
-          </li>
+          {!login && (
+            <li style={{ float: "left" }}>
+              <button type="button" onClick={() => setLogin(true)}>
+                Log-in
+              </button>
+            </li>
+          )}
+          {login && (
+            <li style={{ float: "left" }}>
+              <button type="button" onClick={() => setLogin(false)}>
+                Log-out
+              </button>
+            </li>
+          )}
+          {!login && (
+            <li style={{ float: "left" }}>
+              <button type="button">Sign-up</button>
+            </li>
+          )}
+          {login && (
+            <li style={{ float: "left" }}>
+              <button type="button">My Page</button>
+            </li>
+          )}
         </ul>
       </div>
     </NavBox>
   );
 };
 
-export default NavBar;
+export default Navbar;
 
 const NavBox = styled.nav`
   & > div > p {
@@ -46,27 +67,40 @@ const NavBox = styled.nav`
   & > div > p > span {
     color: ${theme.color.logoPointColor};
   }
-
-  & > .navbar {
+  & > div {
     width: 100%;
     height: 80px;
     background-color: ${theme.color.navColor};
-
-    & > ul {
-      margin: 0;
-      list-style: none;
+  }
+  & > div > ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  & > div > ul > li > button {
+    line-height: 78px;
+    float: right;
+    margin-left: 26px;
+    margin-right: 29px;
+    border: none;
+    background-color: ${theme.color.navColor};
+    color: ${theme.color.whiteFont};
+    font-family: ${theme.font_family.T};
+    font-size: ${theme.font_size.h5};
+    cursor: pointer;
+  }
+  & > div > ul > li > button:hover {
+    color: ${theme.color.logoColor};
+  }
+  @media screen and (max-width: 768px) {
+    & > div > ul > li > button {
+      margin-left: 6px;
+      margin-right: 7px;
+      font-size: ${theme.font_size.body1};
     }
-    & > ul > li > button {
-      line-height: 78px;
-      float: right;
-      margin-left: 26px;
-      margin-right: 29px;
-      border: none;
-      background-color: ${theme.color.navColor};
-      color: ${theme.color.whiteFont};
-      font-family: ${theme.font_family.T};
-      font-size: ${theme.font_size.h5};
-      cursor: pointer;
+    & > div > p {
+      font-size: ${theme.font_size.subtitle1};
+      line-height: 130%;
     }
   }
 `;
