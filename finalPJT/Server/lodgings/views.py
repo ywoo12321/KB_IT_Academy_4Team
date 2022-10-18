@@ -1,4 +1,6 @@
-from django.http import  JsonResponse, HttpResponse
+import re
+from unittest import result
+from django.http import  JsonResponse, HttpResponse, FileResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -10,12 +12,14 @@ from accounts.models import Prefer
 import pandas as pd
 from numpy import dot
 from numpy.linalg import norm
+import os
 
 def norm_cal(a,b):
     return round(dot(a,b)/(norm(a)*norm(b)), 3)
 def cal(prefer):
-    df = pd.read_excel('./MSG.xlsx')
-    df['cosine'] = df.apply(lambda x:norm_cal(prefer, x), axis=1)
+    path = os.path.join(os.getcwd(), 'theme', 'type.xlsx')
+    df = pd.read_excel(path)
+    df['cosine'] = df[['내츄럴', '모던' ,'인더스트리얼', '클래식', '팝아트', '프로방스', '한옥']].apply(lambda x:norm_cal(prefer, x), axis=1)
     df = df.sort_values(by='cosine', ascending=False)
     return df.head(20)
 
@@ -23,29 +27,66 @@ def cal(prefer):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def person_recom(request, user_id):
-    person_recommendation = {}
-    # index별 유저의 선호도 수치 조사
-    if Prefer.objects.filter(user_id=user_id).exists():
-        user = get_object_or_404(Prefer, user_id=user_id)
-        user_tag_prefer = []
-        user_tag_prefer.append(user.prefer_modern)
-        user_tag_prefer.append(user.prefer_natural)
-        user_tag_prefer.append(user.prefer_classic)
-        user_tag_prefer.append(user.prefer_industry)
-        user_tag_prefer.append(user.prefer_asia)
-        user_tag_prefer.append(user.prefer_provence)
-        user_tag_prefer.append(user.prefer_unique)
-        # max값이 존재할 때, (두가지 일 경우) > 비율로 추천해 주는 것이 좋지 않을까?
-        
-        # 최댓값 tag index 확인
-        most_prefer = user_tag_prefer.index(max(user_tag_prefer))
-        person_recom['favor'] = LodgingSerializer
+    # user_filtering = Prefer.objects.filter(user_id=user_id).values()
+    temp = Prefer.objects.get(user_id=user_id)
+    user_filtering = temp.values()      
+    user_prefer = user_filtering[0] if len(user_filtering) > 0 else [0,0,0,0,0,0,0]
+    input = [user_prefer[i] for i in user_prefer.keys()][1:]
 
-    # 만일, user의 prefer가 존재하지 않을 경우 (미실시)
-    else:
-        pass
-    # basic recommendation 추가
-    return JsonResponse(person_recommendation, json_dumps_params={'ensure_ascii': False}, status=200)
+    like_filtering = Like.objects.filter(user_id=user_id).values()
+    tag_dic = {
+        "modern": 0,
+        "natural": 1,
+        "classic": 2,
+        "industry": 3,
+        "asia": 4,
+        "provence": 5,
+        "unique": 6
+    }
+
+    '''
+    가중치 초기화
+    w = [ 0 for i in range(7)]
+
+    찜을 한 것중에서 숙소를 찾고 그 숙소의 가중치를 w에 더하기
+    for i in like_filtering:
+        id = i['lodging_id_id']
+        lod = Lodging.objects.get(id = id).values()
+        temp = [lod[i] for i in tag_dic]
+        w = [x+y for x,y in zip(w, temp)]
+
+    input = [x+y for x,y in zip(input, w)]
+    '''
+        
+
+    # cols = list(map(lambda x : str(x).split('.')[-1], user_prefer._meta.fields))
+    # inputs = [ user_prefer[i] for i in cols ]
+    # print(user_prefer.)
+    answer = cal(input)
+    return JsonResponse({'search':answer.to_dict()}, json_dumps_params={'ensure_ascii': False}, status=200)
+    # person_recommendation = {}
+    # # index별 유저의 선호도 수치 조사
+    # if Prefer.objects.filter(user_id=user_id).exists():
+    #     user = get_object_or_404(Prefer, user_id=user_id)
+    #     user_tag_prefer = []
+    #     user_tag_prefer.append(user.prefer_modern)
+    #     user_tag_prefer.append(user.prefer_natural)
+    #     user_tag_prefer.append(user.prefer_classic)
+    #     user_tag_prefer.append(user.prefer_industry)
+    #     user_tag_prefer.append(user.prefer_asia)
+    #     user_tag_prefer.append(user.prefer_provence)
+    #     user_tag_prefer.append(user.prefer_unique)
+    #     # max값이 존재할 때, (두가지 일 경우) > 비율로 추천해 주는 것이 좋지 않을까?
+        
+    #     # 최댓값 tag index 확인
+    #     most_prefer = user_tag_prefer.index(max(user_tag_prefer))
+    #     person_recom['favor'] = LodgingSerializer
+
+    # # 만일, user의 prefer가 존재하지 않을 경우 (미실시)
+    # else:
+    #     pass
+    # # basic recommendation 추가
+    # return JsonResponse(person_recommendation, json_dumps_params={'ensure_ascii': False}, status=200)
 
 
 # basic = top10 + tag interior(random)
@@ -99,8 +140,6 @@ def sub_lodging(request, lodging_id):
     lod_add_serializers = SimpleLodgingSerializer(lod_add, many=True)
     sub_lodgings['samelocation'] = lod_add_serializers.data
     return JsonResponse(sub_lodgings, json_dumps_params={'ensure_ascii': False}, status=200)
-    
-
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -122,3 +161,17 @@ def search_lodging(request, keyward):
         result = result.union(result3)
     answer = SimpleLodgingSerializer(result, many=True).data
     return JsonResponse({'search':answer}, json_dumps_params={'ensure_ascii': False}, status=200)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def image_response(request, lodging_id):
+    result1 = Lodging.objects.filter(id=lodging_id)
+    if len(result1) > 0:
+        r = result1.values()[0]
+        origin = [os.getcwd(),]
+        origin.extend(r['lodging_img1'].split('/'))
+        path = os.path.join(*origin)
+        img = open(path, 'rb')
+        return HttpResponse(img, content_type='image/jpeg')
+    else:
+        return JsonResponse({'img': "None"}, json_dumps_params={'ensure_ascii': False}, status=200)

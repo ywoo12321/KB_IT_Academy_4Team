@@ -8,4 +8,5 @@ urlpatterns = [
     path('<int:lodging_id>/', views.lodging_detail),
     path('sublodging/<int:lodging_id>/', views.sub_lodging),
     path('search/<keyward>/', views.search_lodging),
+    path('image/<lodging_id>/', views.image_response),
 ]
