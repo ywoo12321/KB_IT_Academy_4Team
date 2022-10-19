@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     # Thrid party apps
     'rest_framework',
     'django_extensions',
+    'drf_yasg',
     
     # Django apps
     'django.contrib.admin',
