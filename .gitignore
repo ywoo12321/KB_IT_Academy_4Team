@@ -1,3 +1,28 @@
+<<<<<<< HEAD
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+=======
 # Created by https://www.toptal.com/developers/gitignore/api/windows,macos,venv,python,django,react,git,linux
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,venv,python,django,react,git,linux
 
@@ -370,3 +395,4 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,venv,python,django,react,git,linux
+>>>>>>> 1ce4e8d3ea0dc1317b41c32bec301666e56b9196
