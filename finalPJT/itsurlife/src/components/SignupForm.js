@@ -4,29 +4,29 @@ import theme from "../styles/theme";
 
 const SignupForm = () => {
   return (
-    <Form class="login">
+    <Form className="login">
       <Title>당신에 대하여 알려주세요</Title>
       <div>
         <span>ID</span>
-        <input type="text" name="id"></input>
+        <input type="text" name="id" />
       </div>
       <div>
         <span>ID</span>
-        <input type="text" name="id"></input>
+        <input type="text" name="id" />
       </div>
       <div>
         <span>ID</span>
-        <input type="text" name="id"></input>
+        <input type="text" name="id" />
       </div>
       <div>
         <span>ID</span>
-        <input type="text" name="id"></input>
+        <input type="text" name="id" />
       </div>
       <div>
         <span>PW</span>
-        <input type="password" name="pw"></input>
+        <input type="password" name="pw" />
       </div>
-      <div class="btncontainer">
+      <div className="btncontainer">
         <Btn>홈으로</Btn>
         <Btn>로그인</Btn>
       </div>

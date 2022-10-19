@@ -4,17 +4,17 @@ import theme from "../styles/theme";
 
 const LoginForm = () => {
   return (
-    <Form class="login">
+    <Form className="login">
       <Title>로그인이 필요합니다.</Title>
       <div>
         <span>ID</span>
-        <input type="text" name="id"></input>
+        <input type="text" name="id" />
       </div>
       <div>
         <span>PW</span>
-        <input type="password" name="pw"></input>
+        <input type="password" name="pw" />
       </div>
-      <div class="btncontainer">
+      <div className="btncontainer">
         <Btn>홈으로</Btn>
         <Btn>로그인</Btn>
       </div>
