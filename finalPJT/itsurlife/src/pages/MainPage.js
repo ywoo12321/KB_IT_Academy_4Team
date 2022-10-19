@@ -22,6 +22,7 @@ const MainPage = () => {
         <div key={lodging.id}>
           <div>{lodging.name}</div>
           <div>{lodging.location}</div>
+          <img src={lodging.image} width={337} height={225} alt="img" />
         </div>
       ))}
       <Footer />
