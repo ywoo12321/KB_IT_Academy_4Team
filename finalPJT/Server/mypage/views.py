@@ -3,7 +3,7 @@ from rest_framework.permissions import AllowAny
 from django.http import  JsonResponse
 import pandas as pd
 import numpy as np
-from lodgings.models import Lodging, Like
+from lodgings.models import Like
 from datetime import datetime
 
 def like_line(like_list):
