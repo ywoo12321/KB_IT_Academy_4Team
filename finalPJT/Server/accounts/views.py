@@ -1,3 +1,4 @@
+from urllib import request
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
@@ -5,6 +6,9 @@ from rest_framework.permissions import AllowAny
 
 from .serializers import AccountSerializer, PreferSerializer
 from .models import Account, Prefer
+
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -26,6 +30,14 @@ def prefer_test(request, user_id):
     }
     return JsonResponse(content)
 
+login_params = openapi.Schema(
+    type=openapi.TYPE_OBJECT, 
+    properties={
+        'userid': openapi.Schema(type=openapi.TYPE_STRING, description='아이디'),
+        'password': openapi.Schema(type=openapi.TYPE_STRING, description='비밀번호'),
+    }
+)   
+@swagger_auto_schema(method='POST', request_body=login_params)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
@@ -39,12 +51,21 @@ def login(request):
                 return JsonResponse({"message":"Success 로그인 성공"}, json_dumps_params={'ensure_ascii': False}, status=200)
             else:
                 return JsonResponse({"message":"Fail, 비밀번호 불일치"}, json_dumps_params={'ensure_ascii': False}, status=200)
-        except Account.DoesNotExist:
+        except :
             return JsonResponse({"message":"Fail, 존재하지 않는 아이디"}, json_dumps_params={'ensure_ascii': False}, status=200)
     else:
         return JsonResponse({"message":"Fail, 잘못된 요청"}, json_dumps_params={'ensure_ascii': False}, status=200)
-
-
+join_params = openapi.Schema(
+    type=openapi.TYPE_OBJECT, 
+    properties={
+        'userid': openapi.Schema(type=openapi.TYPE_STRING, description='아이디'),
+        'password': openapi.Schema(type=openapi.TYPE_STRING, description='비밀번호'),
+        'address': openapi.Schema(type=openapi.TYPE_STRING, description='주소'),
+        'nickname': openapi.Schema(type=openapi.TYPE_STRING, description='닉네임'),
+        'prefer' : openapi.Schema(type=openapi.TYPE_STRING, description='취향'),
+    }
+)   
+@swagger_auto_schema(method='POST', request_body=join_params)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def join(request):
@@ -75,6 +96,7 @@ def join(request):
     else:
         return JsonResponse({"message":"Fail 올바르지 않은 요청입니다."}, json_dumps_params={'ensure_ascii': False}, status=200)
 
+@swagger_auto_schema(method='PUT', request_body=join_params)
 @api_view(['PUT'])
 @permission_classes([AllowAny])
 def update_user_info(request):
