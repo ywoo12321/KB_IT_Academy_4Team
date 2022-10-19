@@ -1,13 +1,14 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import SignupForm from "../components/SignupForm";
 
-const MainPage = () => {
+const SignupPage = () => {
   return (
     <>
       <Navbar />
-      <div>메인페이지 입니다.</div>
+      <SignupForm></SignupForm>
       <Footer />
     </>
   );
 };
-export default MainPage;
+export default SignupPage;

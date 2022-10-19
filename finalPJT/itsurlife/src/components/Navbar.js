@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import theme from "../styles/theme";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [login, setLogin] = useState(false);
@@ -15,30 +16,40 @@ const Navbar = () => {
         </p>
         <ul style={{ float: "right" }}>
           <li style={{ float: "left" }}>
-            <button type="button">Search</button>
+            <button class="btn" type="button">
+              Search
+            </button>
           </li>
           {!login && (
             <li style={{ float: "left" }}>
-              <button type="button" onClick={() => setLogin(true)}>
-                Log-in
-              </button>
+              <Link to="/login">
+                <button class="btn" type="button" onClick={() => setLogin(true)}>
+                  Log-in
+                </button>
+              </Link>
             </li>
           )}
           {login && (
             <li style={{ float: "left" }}>
-              <button type="button" onClick={() => setLogin(false)}>
+              <button class="btn" type="button" onClick={() => setLogin(false)}>
                 Log-out
               </button>
             </li>
           )}
           {!login && (
             <li style={{ float: "left" }}>
-              <button type="button">Sign-up</button>
+              <Link to="/signup">
+                <button class="btn" type="button">
+                  Sign-up
+                </button>
+              </Link>
             </li>
           )}
           {login && (
             <li style={{ float: "left" }}>
-              <button type="button">My Page</button>
+              <button class="btn" type="button">
+                My Page
+              </button>
             </li>
           )}
         </ul>
@@ -77,7 +88,7 @@ const NavBox = styled.nav`
     padding: 0;
     list-style: none;
   }
-  & > div > ul > li > button {
+  .btn {
     line-height: 78px;
     float: right;
     margin-left: 26px;
@@ -89,11 +100,11 @@ const NavBox = styled.nav`
     font-size: ${theme.font_size.h5};
     cursor: pointer;
   }
-  & > div > ul > li > button:hover {
+  .btn:hover {
     color: ${theme.color.logoColor};
   }
   @media screen and (max-width: 768px) {
-    & > div > ul > li > button {
+    .btn {
       margin-left: 6px;
       margin-right: 7px;
       font-size: ${theme.font_size.body1};
