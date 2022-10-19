@@ -3,7 +3,7 @@ import theme from "../styles/theme";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const NavBar = () => {
   const [login, setLogin] = useState(false);
 
   return (
@@ -16,14 +16,14 @@ const Navbar = () => {
         </p>
         <ul style={{ float: "right" }}>
           <li style={{ float: "left" }}>
-            <button class="btn" type="button">
+            <button className="btn" type="button">
               Search
             </button>
           </li>
           {!login && (
             <li style={{ float: "left" }}>
               <Link to="/login">
-                <button class="btn" type="button" onClick={() => setLogin(true)}>
+                <button className="btn" type="button" onClick={() => setLogin(true)}>
                   Log-in
                 </button>
               </Link>
@@ -31,7 +31,7 @@ const Navbar = () => {
           )}
           {login && (
             <li style={{ float: "left" }}>
-              <button class="btn" type="button" onClick={() => setLogin(false)}>
+              <button className="btn" type="button" onClick={() => setLogin(false)}>
                 Log-out
               </button>
             </li>
@@ -39,7 +39,7 @@ const Navbar = () => {
           {!login && (
             <li style={{ float: "left" }}>
               <Link to="/signup">
-                <button class="btn" type="button">
+                <button className="btn" type="button">
                   Sign-up
                 </button>
               </Link>
@@ -47,7 +47,7 @@ const Navbar = () => {
           )}
           {login && (
             <li style={{ float: "left" }}>
-              <button class="btn" type="button">
+              <button className="btn" type="button">
                 My Page
               </button>
             </li>
@@ -58,7 +58,7 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavBar;
 
 const NavBox = styled.nav`
   & > div > p {
