@@ -1,4 +1,4 @@
-from django.http import  JsonResponse, HttpResponse, FileResponse
+from django.http import  JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -9,7 +9,7 @@ from accounts.models import Prefer
 import pandas as pd
 from numpy import dot
 from numpy.linalg import norm
-import os
+import os, random
 
 def norm_cal(a,b):
     return round(dot(a,b)/(norm(a)*norm(b)), 3)
@@ -72,44 +72,77 @@ def person_recom(request, user_id):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def basic_recom(request):
-    lodg = lodging_xlsx()
+    lodging_file = lodging_xlsx()
 
     basic_recommendation = {}
     # 인기있는 숙소 top10
     hot_list = (Like.objects.values('lodging_id').annotate(dcount=Count('lodging_id'))).order_by('-dcount')[:10]
     hot_lodging = []
-    print(hot_lodging)
-    # # range(10)으로 할 경우 위에서 10개까지 slice 안 될 경우 error발생으로 len(hot_list)으로 작성
-    # for h in range(len(hot_list)):
-    #     lodging_pk = hot_list[h]['lodging_id']
 
-    #     # hot_lodging.append(simple_serializer.data)
-    # basic_recommendation['hot'] = hot_lodging
+    # range(10)으로 할 경우 위에서 10개까지 slice 안 될 경우 error발생으로 len(hot_list)으로 작성
+    for h in range(len(hot_list)):
+        lodging = {}
+        lodging_idx = hot_list[h]['lodging_id']
+        lodging['lodging_id'] = lodging_idx
+        lodging['lodging_name'] = lodging_file.loc[lodging_idx]['lodging_name']
+        lodging['lodging_img'] = lodging_file.loc[lodging_idx]['img1']
+        hot_lodging.append(lodging)
+    basic_recommendation['hot'] = hot_lodging
     
     # interior tag별 data 20개씩 추가
-    # !--- random 추가해야합니다 ---! 
-    interior = ["Modern", "Natural", "Classic", "Industrial", "Asia", "Provence", "Pop Art"]
-    # for t in range(7):
-        # tag_list = Lodging.objects.filter(tag=t)[:20]
-        # simple_serializer = SimpleLodgingSerializer(tag_list, many=True)
-        # basic_recommendation[interior[t]] = list(simple_serializer.data)
+    interior_list = ['natural', 'modern', 'industrial', 'classic', 'popart', 'provence', 'asia']
+    for interior in interior_list:
+        # tag 별 가장 성향이 높은 30개의 index
+        theme_idx = list(lodging_file.sort_values(interior, ascending=False).head(30).index)
+        # 30개 중 20개 random하게 추출
+        random_lodg = random.sample(theme_idx, 20)
+        temp = []
+        for ran in random_lodg:
+            lodging = {}
+            lodging['lodging_id'] = ran
+            lodging['lodging_name'] = lodging_file.loc[ran]['lodging_name']
+            lodging['lodging_img'] = lodging_file.loc[ran]['img1']
+            temp.append(lodging)
+        basic_recommendation[interior] = temp
     return JsonResponse(basic_recommendation, json_dumps_params={'ensure_ascii': False}, status=200)
 
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def lodging_detail(request, lodging_id):
-    lodging = get_object_or_404(Lodging, pk=lodging_id)
-    serializer = LodgingSerializer(lodging)
-    # json으로 응답시 한글 깨짐 발생으로 인하여 ensure_ascii 사용
-    return JsonResponse(serializer.data, json_dumps_params={'ensure_ascii': False}, status=200)
+    lodging_file = lodging_xlsx()
+    # 해당 index가 file에 존재할 경우
+    if lodging_id in lodging_file.index:
+        lodging_data = {}
+        lod = lodging_file.loc[lodging_id]
+        lodging_data["lodging_id"] = lodging_id
+        lodging_data["lodging_name"] = lod.loc["lodging_name"]
+        lodging_data["tag"] = lod.loc["tag"]
+        lodging_data["address"] = lod.loc["address"]
+        lodging_data["img1"] = lod.loc["img1"]
+        lodging_data["img2"] = lod.loc["img2"]
+        lodging_data["img3"] = lod.loc["img3"]
+        return JsonResponse(lodging_data, json_dumps_params={'ensure_ascii': False}, status=200)
+
+    # lodging_id가 file에 존재하지 않는 경우
+    else:
+        return JsonResponse(status=404, data={'status':'false','message':'해당하는 숙소는 존재하지 않습니다.'})
 
 
-# !--- random 추가해야합니다 ---! 
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def sub_lodging(request, lodging_id):
-    sub_lodgings = {}
+    lodging_file = lodging_xlsx()
+    # 해당 index가 file에 존재할 경우
+    if lodging_id in lodging_file.index:
+        now_theme = lodging_file.loc[lodging_id]
+        print(now_theme)
+        return JsonResponse(json_dumps_params={'ensure_ascii': False}, status=200)
+
+    # lodging_id가 file에 존재하지 않는 경우
+    else:
+        return JsonResponse(status=404, data={'status':'false','message':'해당하는 숙소는 존재하지 않습니다.'})
+    '''sub_lodgings = {}
     lodging = get_object_or_404(Lodging, pk=lodging_id)
     # 현재 숙소를 제외한 같은 tag 20개를 sametheme로 넣어줌
     lod_tag = Lodging.objects.exclude(pk=lodging_id).filter(tag=lodging.tag)[:20]
@@ -120,7 +153,7 @@ def sub_lodging(request, lodging_id):
     lod_add = Lodging.objects.exclude(pk=lodging_id).filter(lodging_address=lodging.lodging_address)[:20]
     lod_add_serializers = SimpleLodgingSerializer(lod_add, many=True)
     sub_lodgings['samelocation'] = lod_add_serializers.data
-    return JsonResponse(sub_lodgings, json_dumps_params={'ensure_ascii': False}, status=200)
+    return JsonResponse(sub_lodgings, json_dumps_params={'ensure_ascii': False}, status=200)'''
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
