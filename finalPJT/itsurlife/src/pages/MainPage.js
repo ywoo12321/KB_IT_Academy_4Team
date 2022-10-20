@@ -1,5 +1,5 @@
 import Footer from "../components/Footer";
-import NavBar from "../components/NavBar";
+import Navbar from "../components/Navbar";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "@emotion/styled";
@@ -19,7 +19,7 @@ const MainPage = () => {
   }, []);
   return (
     <>
-      <NavBar />
+      <Navbar />
       <ListBox>
         {lodgingInfo.map(lodging => {
           return (
