@@ -21,9 +21,9 @@ def lodging_xlsx():
 
 def cal(prefer):
     df = lodging_xlsx()
-    df['cosine'] = df[['내츄럴', '모던' ,'인더스트리얼', '클래식', '팝아트', '프로방스', '한옥']].apply(lambda x:norm_cal(prefer, x), axis=1)
+    df['cosine'] = df[['natural', 'modern' ,'industrial', 'classic', 'popart', 'provence', 'asia']].apply(lambda x:norm_cal(prefer, x), axis=1)
     df = df.sort_values(by='cosine', ascending=False)
-    return df.head(20)
+    return df.head(21)
 
 # basic + personal recommend
 @api_view(['GET'])
@@ -129,15 +129,31 @@ def lodging_detail(request, lodging_id):
         return JsonResponse(status=404, data={'status':'false','message':'해당하는 숙소는 존재하지 않습니다.'})
 
 
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def sub_lodging(request, lodging_id):
     lodging_file = lodging_xlsx()
+    result = {
+        'sametheme': [],
+        'samelocation': [],
+    }
     # 해당 index가 file에 존재할 경우
     if lodging_id in lodging_file.index:
-        now_theme = lodging_file.loc[lodging_id]
-        print(now_theme)
-        return JsonResponse(json_dumps_params={'ensure_ascii': False}, status=200)
+        # 현재 lodging의 theme값들을 가져옴
+        now_theme = list(lodging_file.loc[lodging_id][2:9])
+        theme_idx = list(cal(now_theme).index)
+        for idx in theme_idx[1:]:
+            lodging = {}
+            lodging['lodging_id'] = idx
+            lodging['lodging_name'] = lodging_file.loc[idx]['lodging_name']
+            lodging['lodging_img'] = lodging_file.loc[idx]['img1']
+            result['sametheme'].append(lodging)
+        # 현재 지역과 같은 지역에 있는 숙소를 random하게 추출
+        now_location = lodging_file.loc[lodging_id]['address']
+        location = list(lodging_file.loc[(lodging_file['address']==now_location) & (lodging_file[lodging_id] != idx)])
+        print(location)
+        return JsonResponse(result, json_dumps_params={'ensure_ascii': False}, status=200)
 
     # lodging_id가 file에 존재하지 않는 경우
     else:
