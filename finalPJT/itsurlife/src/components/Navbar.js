@@ -3,7 +3,7 @@ import theme from "../styles/theme";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const NavBar = () => {
+const Navbar = () => {
   const [login, setLogin] = useState(false);
 
   return (
@@ -58,7 +58,7 @@ const NavBar = () => {
   );
 };
 
-export default NavBar;
+export default Navbar;
 
 const NavBox = styled.nav`
   & > div > p {

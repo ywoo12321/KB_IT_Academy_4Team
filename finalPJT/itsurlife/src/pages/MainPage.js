@@ -1,5 +1,5 @@
 import Footer from "../components/Footer";
-import NavBar from "../components/NavBar";
+import Navbar from "../components/Navbar";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "@emotion/styled";
@@ -7,6 +7,9 @@ import theme from "../styles/theme";
 
 const MainPage = () => {
   const [lodgingInfo, setLodgingInfo] = useState([]);
+  const handleMouseEnter = e => {
+    console.log("enter");
+  };
   const fetchData = async () => {
     const response = await axios.get(
       "https://2bd94f30-be46-4031-b0dc-c5cc936e66e4.mock.pstmn.io/v1/home",
@@ -19,12 +22,17 @@ const MainPage = () => {
   }, []);
   return (
     <>
-      <NavBar />
+      <Navbar />
       <ListBox>
         {lodgingInfo.map(lodging => {
           return (
             <ImgBox key={lodging.id} first_img={lodging.id === 1}>
-              <img className="mainImg" src={lodging.image} alt={lodging.name} />
+              <img
+                className="mainImg"
+                src={lodging.image}
+                alt={lodging.name}
+                // onMouseEnter={handleMouseEnter}
+              />
             </ImgBox>
           );
         })}
