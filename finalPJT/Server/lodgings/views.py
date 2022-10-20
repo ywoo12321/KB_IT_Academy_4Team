@@ -144,7 +144,8 @@ def sub_lodging(request, lodging_id):
     # lodging_id가 file에 존재하지 않는 경우
     else:
         return JsonResponse(status=404, data={'status':'false','message':'해당하는 숙소는 존재하지 않습니다.'})
-    '''sub_lodgings = {}
+    '''
+    sub_lodgings = {}
     lodging = get_object_or_404(Lodging, pk=lodging_id)
     # 현재 숙소를 제외한 같은 tag 20개를 sametheme로 넣어줌
     lod_tag = Lodging.objects.exclude(pk=lodging_id).filter(tag=lodging.tag)[:20]
@@ -155,7 +156,8 @@ def sub_lodging(request, lodging_id):
     lod_add = Lodging.objects.exclude(pk=lodging_id).filter(lodging_address=lodging.lodging_address)[:20]
     lod_add_serializers = SimpleLodgingSerializer(lod_add, many=True)
     sub_lodgings['samelocation'] = lod_add_serializers.data
-    return JsonResponse(sub_lodgings, json_dumps_params={'ensure_ascii': False}, status=200)'''
+    return JsonResponse(sub_lodgings, json_dumps_params={'ensure_ascii': False}, status=200)
+    '''
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -182,14 +184,23 @@ def search_lodging(request, keyword):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def image_response(request, lodging_id):
-    result1 = Lodging.objects.filter(id=lodging_id)
-    if len(result1) > 0:
-        r = result1.values()[0]
-        origin = [os.getcwd(),]
-        origin.extend(r['lodging_img1'].split('/'))
+def random_maker(request):
+    origin = [os.getcwd(), 'theme', 'traindata']
+    result_dict = {}
+    for t in type_theme:
+        temp = origin + [t]
+        result_dict[t] = random.sample(os.listdir(os.path.join(*temp)), 3)
+    pop_list = ['provence', 'classic', 'popart']
+    result_dict[random.choice(pop_list)].pop()
+    return JsonResponse({'img': result_dict}, json_dumps_params={'ensure_ascii': False}, status=200)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def image_response(request, theme, keyword):
+    try:
+        origin = [os.getcwd(), 'theme', 'traindata', theme, keyword]
         path = os.path.join(*origin)
         img = open(path, 'rb')
         return HttpResponse(img, content_type='image/jpeg')
-    else:
+    except:
         return JsonResponse({'img': "None"}, json_dumps_params={'ensure_ascii': False}, status=200)

@@ -8,5 +8,6 @@ urlpatterns = [
     path('<int:lodging_id>/', views.lodging_detail),
     path('sublodging/<int:lodging_id>/', views.sub_lodging),
     path('search/<keyword>/', views.search_lodging),
-    path('image/<lodging_id>/', views.image_response),
+    path('random/', views.random_maker),
+    path('image/<theme>/<keyword>', views.image_response)
 ]
