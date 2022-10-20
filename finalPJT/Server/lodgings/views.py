@@ -11,6 +11,8 @@ from numpy import dot
 from numpy.linalg import norm
 import os, random
 
+type_theme = ['modern', 'natural',  'classic', 'industrial', 'asia', 'provence', 'popart']
+
 def norm_cal(a,b):
     return round(dot(a,b)/(norm(a)*norm(b)), 3)
 
@@ -21,7 +23,7 @@ def lodging_xlsx():
 
 def cal(prefer):
     df = lodging_xlsx()
-    df['cosine'] = df[['natural', 'modern' ,'industrial', 'classic', 'popart', 'provence', 'asia']].apply(lambda x:norm_cal(prefer, x), axis=1)
+    df['cosine'] = df[type_theme].apply(lambda x:norm_cal(prefer, x), axis=1)
     df = df.sort_values(by='cosine', ascending=False)
     return df.head(21)
 
@@ -29,42 +31,26 @@ def cal(prefer):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def person_recom(request, user_id):
-    # user_filtering = Prefer.objects.filter(user_id=user_id).values()
-    temp = Prefer.objects.get(user_id=user_id)
-    user_filtering = temp.values()      
-    user_prefer = user_filtering[0] if len(user_filtering) > 0 else [0,0,0,0,0,0,0]
-    input = [user_prefer[i] for i in user_prefer.keys()][1:]
+    theme = \
+    ['prefer_modern',
+    'prefer_natural',
+    'prefer_classic',
+    'prefer_industry',
+    'prefer_asia',
+    'prefer_provence',
+    'prefer_unique',]
 
-    like_filtering = Like.objects.filter(user_id=user_id).values()
-    tag_dic = {
-        "modern": 0,
-        "natural": 1,
-        "classic": 2,
-        "industry": 3,
-        "asia": 4,
-        "provence": 5,
-        "unique": 6
-    }
-
-    '''
-    가중치 초기화
-    w = [ 0 for i in range(7)]
-
-    찜을 한 것중에서 숙소를 찾고 그 숙소의 가중치를 w에 더하기
-    for i in like_filtering:
-        id = i['lodging_id_id']
-        lod = Lodging.objects.get(id = id).values()
-        temp = [lod[i] for i in tag_dic]
-        w = [x+y for x,y in zip(w, temp)]
-
-    input = [x+y for x,y in zip(input, w)]
-    '''
-
-    # cols = list(map(lambda x : str(x).split('.')[-1], user_prefer._meta.fields))
-    # inputs = [ user_prefer[i] for i in cols ]
-    # print(user_prefer.)
-    answer = cal(input)
-    return JsonResponse({'search':answer.to_dict()}, json_dumps_params={'ensure_ascii': False}, status=200)
+    temp = Prefer.objects.get(user_id_id=user_id).__dict__
+    del temp['_state']
+    
+    user_prefer = [temp[i] for i in theme]
+    list_lodging = lodging_xlsx()
+    user_like = pd.DataFrame(list(Like.objects.filter(user_id=user_id).values()))
+    index_lod = list(user_like['lodging_id'].unique())
+    temp2 = list_lodging.iloc[index_lod, :].sum()[type_theme].values
+    user_prefer = [ x + y for x,y in zip(user_prefer, temp2)]
+    answer = cal(user_prefer).drop('Unnamed: 0', axis=1).reset_index().rename(columns={'index':'lodging_id', 'img1':'lodging_img' })[['lodging_id', 'lodging_name','tag','address', 'lodging_img']]
+    return JsonResponse(answer.to_dict(orient='records'),safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
 
 
 
@@ -90,8 +76,8 @@ def basic_recom(request):
     basic_recommendation['hot'] = hot_lodging
     
     # interior tag별 data 20개씩 추가
-    interior_list = ['natural', 'modern', 'industrial', 'classic', 'popart', 'provence', 'asia']
-    for interior in interior_list:
+    # interior_list = ['natural', 'modern', 'industrial', 'classic', 'popart', 'provence', 'asia']
+    for interior in type_theme:
         # tag 별 가장 성향이 높은 30개의 index
         theme_idx = list(lodging_file.sort_values(interior, ascending=False).head(30).index)
         # 30개 중 20개 random하게 추출
@@ -158,7 +144,8 @@ def sub_lodging(request, lodging_id):
     # lodging_id가 file에 존재하지 않는 경우
     else:
         return JsonResponse(status=404, data={'status':'false','message':'해당하는 숙소는 존재하지 않습니다.'})
-    '''sub_lodgings = {}
+    '''
+    sub_lodgings = {}
     lodging = get_object_or_404(Lodging, pk=lodging_id)
     # 현재 숙소를 제외한 같은 tag 20개를 sametheme로 넣어줌
     lod_tag = Lodging.objects.exclude(pk=lodging_id).filter(tag=lodging.tag)[:20]
@@ -169,11 +156,12 @@ def sub_lodging(request, lodging_id):
     lod_add = Lodging.objects.exclude(pk=lodging_id).filter(lodging_address=lodging.lodging_address)[:20]
     lod_add_serializers = SimpleLodgingSerializer(lod_add, many=True)
     sub_lodgings['samelocation'] = lod_add_serializers.data
-    return JsonResponse(sub_lodgings, json_dumps_params={'ensure_ascii': False}, status=200)'''
+    return JsonResponse(sub_lodgings, json_dumps_params={'ensure_ascii': False}, status=200)
+    '''
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def search_lodging(request, keyward):
+def search_lodging(request, keyword):
     tag_dic = {
         "modern": 0,
         "natural": 1,
@@ -183,25 +171,36 @@ def search_lodging(request, keyward):
         "provence": 5,
         "unique": 6
     }
-    result1 = Lodging.objects.filter(lodging_name__contains=keyward)
-    result2 = Lodging.objects.filter(lodging_address__contains=keyward)
-    result = result1.union(result2)
-    if keyward in tag_dic:
-        result3 = Lodging.objects.filter(tag=tag_dic[keyward])
-        result = result.union(result3)
-    answer = SimpleLodgingSerializer(result, many=True).data
-    return JsonResponse({'search':answer}, json_dumps_params={'ensure_ascii': False}, status=200)
+    input_list = sum(list(map(lambda x : x.split(), keyword.split(','))), [])
+    finds = []
+    check = '|'.join(input_list)
+    df_lodging = lodging_xlsx()
+    finds.extend(df_lodging[df_lodging['lodging_name'].str.contains(check)]['Unnamed: 0'].index.values)
+    finds.extend(df_lodging[df_lodging['address'].str.contains(check)]['Unnamed: 0'].index.values)
+    finds.extend(df_lodging[df_lodging['tag'].str.contains(check)]['Unnamed: 0'].index.values)
+    find_index = sorted(list(set(finds)))
+    answer = df_lodging.iloc[find_index].drop('Unnamed: 0', axis=1).reset_index().rename(columns={'index':'lodging_id', 'img1':'lodging_img' })[['lodging_id', 'lodging_name','tag','address', 'lodging_img']]
+    return JsonResponse(answer.to_dict(orient='records'),safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def image_response(request, lodging_id):
-    result1 = Lodging.objects.filter(id=lodging_id)
-    if len(result1) > 0:
-        r = result1.values()[0]
-        origin = [os.getcwd(),]
-        origin.extend(r['lodging_img1'].split('/'))
+def random_maker(request):
+    origin = [os.getcwd(), 'theme', 'traindata']
+    result_dict = {}
+    for t in type_theme:
+        temp = origin + [t]
+        result_dict[t] = random.sample(os.listdir(os.path.join(*temp)), 3)
+    pop_list = ['provence', 'classic', 'popart']
+    result_dict[random.choice(pop_list)].pop()
+    return JsonResponse({'img': result_dict}, json_dumps_params={'ensure_ascii': False}, status=200)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def image_response(request, theme, keyword):
+    try:
+        origin = [os.getcwd(), 'theme', 'traindata', theme, keyword]
         path = os.path.join(*origin)
         img = open(path, 'rb')
         return HttpResponse(img, content_type='image/jpeg')
-    else:
+    except:
         return JsonResponse({'img': "None"}, json_dumps_params={'ensure_ascii': False}, status=200)
