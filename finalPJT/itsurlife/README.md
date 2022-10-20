@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -68,3 +69,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+=======
+# KB_IT_Academy_4Team
+
+- Mini Project : 2022.09.13
+  
+   - 데이터 분석 : 2019년 2021년 서울시 아파트 데이터를 이용한 분석
+>>>>>>> 1ce4e8d3ea0dc1317b41c32bec301666e56b9196
