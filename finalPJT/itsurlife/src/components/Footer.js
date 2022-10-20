@@ -29,7 +29,8 @@ const FooterBox = styled.footer`
   }
   & > .foot > p {
     margin: 0;
-    padding-left: 22px;
+    padding: 22px;
+    line-height: 20px;
     color: ${theme.color.whiteFont};
     font-family: ${theme.font_family.N};
     font-size: ${theme.font_size.body2};

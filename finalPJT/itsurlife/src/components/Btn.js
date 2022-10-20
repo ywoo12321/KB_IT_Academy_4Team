@@ -20,7 +20,7 @@ const Button = styled.button`
 
   text-align: center;
 
-  :hover {
+  &:hover {
     background-color: ${theme.color.whiteFont};
     color: ${theme.color.footerColor};
     border: 3px solid ${theme.color.footerColor};
