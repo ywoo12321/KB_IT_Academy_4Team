@@ -19,14 +19,6 @@ const Navbar = () => {
           <img src={searchicon} alt="searchicon" />
         </div>
         <ul style={{ float: "right" }}>
-          {!login && (
-            <li style={{ float: "left" }}>
-              <div id="toggle">
-                <input type="checkbox" id="switch" />
-                <label htmlFor="switch">Toggle</label>
-              </div>
-            </li>
-          )}
           {login && (
             <li style={{ float: "left" }}>
               <div id="toggle">

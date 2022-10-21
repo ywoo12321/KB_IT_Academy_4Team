@@ -4,6 +4,7 @@ import theme from "../styles/theme";
 import Btn from "../components/Btn";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const SelectPage = () => {
   const [locationInfo, setlocationInfo] = useState([]);
@@ -48,7 +49,9 @@ const SelectPage = () => {
             })}
           </ImgContainer>
           <BtnBox>
-            <Btn>이전으로</Btn>
+            <Link to="/signup">
+              <Btn>이전</Btn>
+            </Link>
             <Btn>완료</Btn>
           </BtnBox>
         </SelectBox>
