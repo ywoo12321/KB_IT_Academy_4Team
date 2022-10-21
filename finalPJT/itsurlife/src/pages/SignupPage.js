@@ -1,5 +1,4 @@
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 import SignupForm from "../components/SignupForm";
 
 const SignupPage = () => {
@@ -7,7 +6,6 @@ const SignupPage = () => {
     <>
       <Navbar />
       <SignupForm />
-      <Footer />
     </>
   );
 };
