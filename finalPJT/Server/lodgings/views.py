@@ -162,15 +162,6 @@ def sub_lodging(request, lodging_id):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def search_lodging(request, keyword):
-    tag_dic = {
-        "modern": 0,
-        "natural": 1,
-        "classic": 2,
-        "industry": 3,
-        "asia": 4,
-        "provence": 5,
-        "unique": 6
-    }
     input_list = sum(list(map(lambda x : x.split(), keyword.split(','))), [])
     finds = []
     check = '|'.join(input_list)
@@ -185,14 +176,20 @@ def search_lodging(request, keyword):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def random_maker(request):
+    url = request.build_absolute_uri().replace('random', 'image')
     origin = [os.getcwd(), 'theme', 'traindata']
-    result_dict = {}
-    for t in type_theme:
-        temp = origin + [t]
-        result_dict[t] = random.sample(os.listdir(os.path.join(*temp)), 3)
     pop_list = ['provence', 'classic', 'popart']
-    result_dict[random.choice(pop_list)].pop()
-    return JsonResponse({'img': result_dict}, json_dumps_params={'ensure_ascii': False}, status=200)
+    result_dict = {}
+    theme_list = (type_theme.copy())*3
+    random.shuffle(theme_list)
+    theme_list.remove(random.choice(pop_list))
+    for i,v in enumerate(theme_list):
+        temp = origin + [v]
+        temp_dict = {}
+        temp_dict['src'] = url + v + '/'+random.choice(os.listdir(os.path.join(*temp)))
+        temp_dict['tag'] = type_theme.index(v)
+        result_dict['image'+str(i+1)] = temp_dict
+    return JsonResponse(result_dict, json_dumps_params={'ensure_ascii': False}, status=200)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
