@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "@emotion/styled";
 import theme from "../styles/theme";
+import { symbol } from "prop-types";
 
 const MainPage = () => {
   const [lodgingInfo, setLodgingInfo] = useState([]);
@@ -24,7 +25,8 @@ const MainPage = () => {
         {lodgingInfo.map(lodging => {
           return (
             <ImgBox key={lodging.id} first_img={lodging.id === 1}>
-              <img className="mainImg" src={lodging.image} alt={lodging.name} />
+              <LodgingName>{lodging.name}</LodgingName>
+              <LodgingImage src={lodging.image} alt={lodging.name} />
             </ImgBox>
           );
         })}
@@ -33,18 +35,43 @@ const MainPage = () => {
     </>
   );
 };
+const LodgingName = styled.div`
+  display: none;
+  z-index: 99;
+  position: absolute;
+  color: ${theme.color.whiteFont};
+  left: 40%;
+  top: 90%;
+`;
+
+const LodgingImage = styled.img`
+  width: 337px;
+  height: 225px;
+  object-fit: cover;
+  z-index: -10;
+  &:hover {
+    filter: brightness(0.4);
+  }
+`;
 const ImgBox = styled.div`
   width: 337px;
   height: 225px;
+  position: relative;
   margin-right: 78px;
   margin-left: ${({ first_img }) => (first_img ? "130px" : "0px")};
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 25px;
   overflow: hidden;
   & > .mainImg {
+    position: relative;
     width: 337px;
     height: 225px;
     object-fit: cover;
+  }
+  &:hover {
+    & > div {
+      display: block;
+    }
   }
 `;
 

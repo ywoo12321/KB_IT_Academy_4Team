@@ -4,13 +4,14 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../images/logo.png";
 import searchicon from "../images/searchicon.png";
+
 const Navbar = () => {
   const [login, setLogin] = useState(false);
 
   return (
     <NavBox>
       <div className="navbar">
-        <Link to="/mainPage" class="logolink">
+        <Link to="/mainPage" className="logolink">
           <img src={logo} alt="logo" />
         </Link>
         <div className="searchbox">
