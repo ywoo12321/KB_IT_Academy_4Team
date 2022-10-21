@@ -11,7 +11,7 @@ const Navbar = () => {
   return (
     <NavBox>
       <div className="navbar">
-        <Link to="/mainPage" class="logolink">
+        <Link to="/mainPage" className="logolink">
           <img src={logo} alt="logo" />
         </Link>
         <div className="searchbox">
