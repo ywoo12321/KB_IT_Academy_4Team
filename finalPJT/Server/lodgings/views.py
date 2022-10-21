@@ -176,17 +176,20 @@ def search_lodging(request, keyword):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def random_maker(request):
+    result_dict = {}
+    random_dict = {}
     url = request.build_absolute_uri().replace('random', 'image')
     origin = [os.getcwd(), 'theme', 'traindata']
     pop_list = ['provence', 'classic', 'popart']
-    result_dict = {}
     theme_list = (type_theme.copy())*3
     random.shuffle(theme_list)
     theme_list.remove(random.choice(pop_list))
     for i,v in enumerate(theme_list):
-        temp = origin + [v]
+        if v not in random_dict:
+            temp = origin + [v]
+            random_dict[v] = os.listdir(os.path.join(*temp))
         temp_dict = {}
-        temp_dict['src'] = url + v + '/'+random.choice(os.listdir(os.path.join(*temp)))
+        temp_dict['src'] = url + v + '/'+ random_dict[v].pop(random.choice(range(len(random_dict[v]))))
         temp_dict['tag'] = type_theme.index(v)
         result_dict['image'+str(i+1)] = temp_dict
     return JsonResponse(result_dict, json_dumps_params={'ensure_ascii': False}, status=200)
