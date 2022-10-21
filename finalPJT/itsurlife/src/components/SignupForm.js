@@ -2,6 +2,7 @@ import Btn from "./Btn";
 import styled from "@emotion/styled";
 import theme from "../styles/theme";
 import Signupimg from "../images/Signupimg.png";
+import { Link } from "react-router-dom";
 
 const SignupForm = () => {
   return (
@@ -46,8 +47,12 @@ const SignupForm = () => {
             <input type="text" name="area" />
           </div>
           <div className="btncontainer">
-            <Btn>이전</Btn>
-            <Btn>다음</Btn>
+            <Link to="/mainPage">
+              <Btn>이전</Btn>
+            </Link>
+            <Link to="/selectPage">
+              <Btn>다음</Btn>
+            </Link>
           </div>
         </Form>
       </FormBox>
@@ -133,7 +138,7 @@ const Form = styled.form`
     text-align: center;
   }
 
-  & > .btncontainer > button {
+  & > .btncontainer button {
     margin: 10px 75px 20px 75px;
   }
 `;

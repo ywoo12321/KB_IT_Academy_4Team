@@ -6,6 +6,7 @@ import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
 import { Global } from "@emotion/react";
 import { global } from "../styles/global";
+import SelectPage from "./SelectPage";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
           <Route path="/mainPage" element={<MainPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/selectPage" element={<SelectPage />} />
         </Routes>
       </BrowserRouter>
     </>
