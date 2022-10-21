@@ -45,6 +45,7 @@ const LodgingName = styled.div`
   top: 80%;
   left: 50%;
   transform: translate(-50%, -50%);
+  cursor: pointer;
 `;
 
 const LodgingImage = styled.img`
@@ -52,6 +53,7 @@ const LodgingImage = styled.img`
   height: 225px;
   object-fit: cover;
   z-index: -10;
+  cursor: pointer;
   &:hover {
     filter: brightness(0.4);
   }
