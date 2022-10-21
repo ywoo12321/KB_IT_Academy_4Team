@@ -110,12 +110,11 @@ const Form = styled.form`
   & > div > input {
     width: 500px;
     border-radius: 30px;
-    border: none;
     height: 55px;
     margin-bottom: 40px;
     padding-left: 20px;
     outline: none;
-    font-size: ${theme.font_size.subtitle1};
+    font-size: ${theme.font_size.body2};
     font-family: ${theme.font_family.T};
     background: #f6f5f1;
     border: 1px solid ${theme.color.logoColor};
@@ -123,7 +122,7 @@ const Form = styled.form`
 
     ::placeholder {
       font-family: ${theme.font_family.N};
-      font-size: 16px;
+      font-size: ${theme.font_size.body2};
     }
   }
   & > div > input[name="pw"] {
