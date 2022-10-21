@@ -39,9 +39,12 @@ const LodgingName = styled.div`
   display: none;
   z-index: 99;
   position: absolute;
+  font-family: ${theme.font_family.T};
+  font-size: ${theme.font_size.h4};
   color: ${theme.color.whiteFont};
-  left: 40%;
-  top: 90%;
+  top: 80%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const LodgingImage = styled.img`
