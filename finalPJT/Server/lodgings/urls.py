@@ -9,5 +9,7 @@ urlpatterns = [
     path('sublodging/<int:lodging_id>/', views.sub_lodging),
     path('search/<keyword>/', views.search_lodging),
     path('random/', views.random_maker),
-    path('image/<theme>/<keyword>', views.image_response)
+    path('image/<theme>/<keyword>', views.image_response),
+    path('like/<user_id>/<int:lodging_id>', views.like),
+    path('dislike/<user_id>/<int:lodging_id>', views.dislike)
 ]
