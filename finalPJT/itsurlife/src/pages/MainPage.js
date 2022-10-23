@@ -6,120 +6,45 @@ import styled from "@emotion/styled";
 import theme from "../styles/theme";
 
 const MainPage = () => {
-  const [locationInfo, setlocationInfo] = useState([]);
-  const fetchlocation = async () => {
-    //근처 지역 숙소 정보 받아오기
-    const response = await axios.get(
-      "https://2bd94f30-be46-4031-b0dc-c5cc936e66e4.mock.pstmn.io/main/location",
-    );
+  const [mainPageInfo, setMainPageInfo] = useState([]);
+  const fetchMainPage = async () => {
+    //MainPage 정보 받아오기
+    const response = await axios.get("https://kaybe-wgkwk.run.goorm.io/lodgings/recommendation");
     await console.log(response.data);
-    setlocationInfo(response.data);
+    setMainPageInfo(response.data);
   };
   useEffect(() => {
-    fetchlocation();
-  }, []);
-  const [top10Info, setTop10Info] = useState([]);
-  const fetchTop10 = async () => {
-    //Top10 정보 받아오기
-    const response = await axios.get(
-      "https://2bd94f30-be46-4031-b0dc-c5cc936e66e4.mock.pstmn.io/main/top10",
-    );
-    await console.log(response.data);
-    setTop10Info(response.data);
-  };
-  useEffect(() => {
-    fetchTop10();
-  }, []);
-  const [modernInfo, setModernInfo] = useState([]);
-  const fetchModern = async () => {
-    //modern 정보 받아오기
-    const response = await axios.get(
-      "https://2bd94f30-be46-4031-b0dc-c5cc936e66e4.mock.pstmn.io/main/modern",
-    );
-    await console.log(response.data);
-    setModernInfo(response.data);
-  };
-  useEffect(() => {
-    fetchModern();
-  }, []);
-  const [naturalInfo, setNaturalInfo] = useState([]);
-  const fetchNatural = async () => {
-    //natural 정보 받아오기
-    const response = await axios.get(
-      "https://2bd94f30-be46-4031-b0dc-c5cc936e66e4.mock.pstmn.io/main/natural",
-    );
-    await console.log(response.data);
-    setNaturalInfo(response.data);
-  };
-  useEffect(() => {
-    fetchNatural();
-  }, []);
-  const [classicInfo, setClassicInfo] = useState([]);
-  const fetchClassic = async () => {
-    //classic 정보 받아오기
-    const response = await axios.get(
-      "https://2bd94f30-be46-4031-b0dc-c5cc936e66e4.mock.pstmn.io/main/classic",
-    );
-    await console.log(response.data);
-    setClassicInfo(response.data);
-  };
-  useEffect(() => {
-    fetchClassic();
-  }, []);
-  const [asiaInfo, setAsiaInfo] = useState([]);
-  const fetchAsia = async () => {
-    //asia 정보 받아오기
-    const response = await axios.get(
-      "https://2bd94f30-be46-4031-b0dc-c5cc936e66e4.mock.pstmn.io/main/asia",
-    );
-    await console.log(response.data);
-    setAsiaInfo(response.data);
-  };
-  useEffect(() => {
-    fetchAsia();
-  }, []);
-  const [provenceInfo, setProvenceInfo] = useState([]);
-  const fetchProvence = async () => {
-    //provence 정보 받아오기
-    const response = await axios.get(
-      "https://2bd94f30-be46-4031-b0dc-c5cc936e66e4.mock.pstmn.io/main/provence",
-    );
-    await console.log(response.data);
-    setProvenceInfo(response.data);
-  };
-  useEffect(() => {
-    fetchProvence();
-  }, []);
-  const [industrialInfo, setIndustrialInfo] = useState([]);
-  const fetchIndustrial = async () => {
-    //industrial 정보 받아오기
-    const response = await axios.get(
-      "https://2bd94f30-be46-4031-b0dc-c5cc936e66e4.mock.pstmn.io/main/industrial",
-    );
-    await console.log(response.data);
-    setIndustrialInfo(response.data);
-  };
-  useEffect(() => {
-    fetchIndustrial();
-  }, []);
-  const [uniqueInfo, setUniqueInfo] = useState([]);
-  const fetchUnique = async () => {
-    //unique 정보 받아오기
-    const response = await axios.get(
-      "https://2bd94f30-be46-4031-b0dc-c5cc936e66e4.mock.pstmn.io/main/unique",
-    );
-    await console.log(response.data);
-    setUniqueInfo(response.data);
-  };
-  useEffect(() => {
-    fetchUnique();
+    fetchMainPage();
   }, []);
 
   return (
     <>
       <Navbar />
       <MainAdvertiseBox />
-      <BoxNameBox>xx님의 근처 숙소</BoxNameBox>
+      {mainPageInfo.map(main => {
+        return Object.keys(main).map(lodgings => {
+          console.log(LIST_INFO[lodgings]);
+          return (
+            <div key={lodgings}>
+              <BoxNameBox>{LIST_INFO[lodgings]}</BoxNameBox>
+              <ListBox key={lodgings}>
+                {Object.keys(main[lodgings]).map(lodging => {
+                  return (
+                    <ImgBox key={main[lodgings][lodging].lodging_id} first_img={lodging === "0"}>
+                      <LodgingName>{main[lodgings][lodging].lodging_name}</LodgingName>
+                      <LodgingImage
+                        src={main[lodgings][lodging].lodging_img}
+                        alt={main[lodgings][lodging].lodging_name}
+                      />
+                    </ImgBox>
+                  );
+                })}
+              </ListBox>
+            </div>
+          );
+        });
+      })}
+      {/* <BoxNameBox>xx님의 근처 숙소</BoxNameBox>
       <ListBox>
         {locationInfo.map(lodging => {
           return (
@@ -217,11 +142,22 @@ const MainPage = () => {
             </ImgBox>
           );
         })}
-      </LastBox>
+      </LastBox> */}
       <Footer />
     </>
   );
 };
+const LIST_INFO = {
+  0: "#TOP10 인기숙소",
+  1: "#모던한 감성 숙소",
+  2: "#네츄럴한 감성 숙소",
+  3: "#클래식한 감성 숙소",
+  4: "#아시아 감성 숙소",
+  5: "#프로방스 감성 숙소",
+  6: "#인더스트리얼 감성 숙소",
+  7: "#유니크한 감성 숙소",
+};
+
 const MainAdvertiseBox = styled.div`
   width: 1874px;
   height: 800px;
