@@ -167,7 +167,7 @@ def lodging_detail(request, lodging_id):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def sub_lodging(request, lodging_id):
-    lodging_file = lodging_xlsx()
+    lodging_file = lodging_xlsx().copy()
     result = {
         'sametheme': [],
         'samelocation': [],
@@ -185,9 +185,17 @@ def sub_lodging(request, lodging_id):
             result['sametheme'].append(lodging)
         # 현재 지역과 같은 지역에 있는 숙소를 random하게 추출
         now_location = lodging_file.loc[lodging_id]['address']
-        location = list(lodging_file.loc[(lodging_file['address']==now_location) & (lodging_file[lodging_id] != idx)])
-        print(location)
-        return JsonResponse([result], json_dumps_params={'ensure_ascii': False}, status=200)
+        condition = (lodging_file['address']==now_location)
+        location_idx = list(lodging_file.loc[condition].drop(lodging_id).index)
+        # 20개 random하게 추출
+        lodg = random.sample(location_idx, 20)
+        for lod in lodg:
+            lodging = {}
+            lodging['lodging_id'] = lod
+            lodging['lodging_name'] = lodging_file.loc[lod]['lodging_name']
+            lodging['lodging_img'] = lodging_file.loc[lod]['img1']
+            result['samelocation'].append(lodging)
+        return JsonResponse(result, json_dumps_params={'ensure_ascii': False}, status=200)
 
     # lodging_id가 file에 존재하지 않는 경우
     else:
