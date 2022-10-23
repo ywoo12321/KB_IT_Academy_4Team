@@ -123,7 +123,7 @@ def person_recom(request, user_id):
     local_maker(personal_recommend, user_id)
     hot_maker(personal_recommend)
     tag_maker(personal_recommend)
-    return JsonResponse(personal_recommend ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
+    return JsonResponse([personal_recommend] ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
 
 # 비회원
 # basic = top10 + tag interior(random)
@@ -138,7 +138,7 @@ def basic_recom(request):
     # 개수 확인을 위한 test
     # for i in basic_recommendation.keys():
     #     print(len(basic_recommendation[i]))
-    return JsonResponse(basic_recommendation, json_dumps_params={'ensure_ascii': False}, status=200)
+    return JsonResponse([basic_recommendation], safe=False, json_dumps_params={'ensure_ascii': False}, status=200)
 
 
 @api_view(['GET'])
@@ -156,7 +156,7 @@ def lodging_detail(request, lodging_id):
         lodging_data["img1"] = lod.loc["img1"]
         lodging_data["img2"] = lod.loc["img2"]
         lodging_data["img3"] = lod.loc["img3"]
-        return JsonResponse(lodging_data, json_dumps_params={'ensure_ascii': False}, status=200)
+        return JsonResponse([lodging_data], json_dumps_params={'ensure_ascii': False}, status=200)
 
     # lodging_id가 file에 존재하지 않는 경우
     else:
@@ -187,7 +187,7 @@ def sub_lodging(request, lodging_id):
         now_location = lodging_file.loc[lodging_id]['address']
         location = list(lodging_file.loc[(lodging_file['address']==now_location) & (lodging_file[lodging_id] != idx)])
         print(location)
-        return JsonResponse(result, json_dumps_params={'ensure_ascii': False}, status=200)
+        return JsonResponse([result], json_dumps_params={'ensure_ascii': False}, status=200)
 
     # lodging_id가 file에 존재하지 않는 경우
     else:
@@ -219,7 +219,7 @@ def search_lodging(request, keyword):
     finds.extend(df_lodging[df_lodging['tag'].str.contains(check)]['Unnamed: 0'].index.values)
     find_index = sorted(list(set(finds)))
     answer = df_lodging.iloc[find_index].drop('Unnamed: 0', axis=1).reset_index().rename(columns={'index':'lodging_id', 'img1':'lodging_img' })[['lodging_id', 'lodging_name','tag','address', 'lodging_img']]
-    return JsonResponse(answer.to_dict(orient='records'),safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
+    return JsonResponse([answer.to_dict(orient='records')],safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -240,7 +240,7 @@ def random_maker(request):
         temp_dict['src'] = url + v + '/'+ random_dict[v].pop(random.choice(range(len(random_dict[v]))))
         temp_dict['tag'] = type_theme.index(v)
         result_dict['image'+str(i+1)] = temp_dict
-    return JsonResponse(result_dict, json_dumps_params={'ensure_ascii': False}, status=200)
+    return JsonResponse([result_dict], json_dumps_params={'ensure_ascii': False}, status=200)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
