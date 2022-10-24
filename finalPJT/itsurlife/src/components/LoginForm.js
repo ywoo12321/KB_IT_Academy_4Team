@@ -25,7 +25,9 @@ const LoginForm = () => {
             <Link to="/mainPage">
               <Btn>홈으로</Btn>
             </Link>
-            <Btn>로그인</Btn>
+            <Link to="/mainPageLog">
+              <Btn>로그인</Btn>
+            </Link>
           </div>
         </Form>
       </FormBox>

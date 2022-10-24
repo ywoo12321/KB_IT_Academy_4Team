@@ -1,17 +1,23 @@
 import styled from "@emotion/styled";
 import theme from "../styles/theme";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useLocation, Link } from "react-router-dom";
 import logo from "../images/logo.png";
 import searchicon from "../images/searchicon.png";
 
 const Navbar = () => {
   const [login, setLogin] = useState(false);
-
+  const location = useLocation();
+  useEffect(() => {
+    console.log(location.pathname === "/mainPageLog");
+  }, [location]);
   return (
     <NavBox>
       <div className="navbar">
-        <Link to="/mainPage" className="logolink">
+        <Link
+          to={location.pathname === "/mainPageLog" ? "/mainPageLog" : "/mainPage"}
+          className="logolink"
+        >
           <img src={logo} alt="logo" />
         </Link>
         <div className="searchbox">
