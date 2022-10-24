@@ -4,6 +4,7 @@ import theme from "../styles/theme";
 import Btn from "../components/Btn";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const SelectPage = () => {
   const [locationInfo, setlocationInfo] = useState([]);
@@ -11,15 +12,19 @@ const SelectPage = () => {
 
   const handleClick = event => {
     const item = event.target;
-    if (clicked.length >= 5) {
+    console.log(clicked);
+    if (clicked.indexOf(item) !== -1) {
+      clicked.splice(clicked.indexOf(item), 1);
+      item.classList.remove("clicked");
+    } else if (clicked.length >= 5) {
       return;
+    } else {
+      item.classList.add("clicked");
     }
-    item.setAttribute(clicked, true);
-    setClicked([...item]);
+    setClicked([...clicked, item]);
   };
 
   const fetchlocation = async () => {
-    //근처 지역 숙소 정보 받아오기
     const response = await axios.get("https://kaybe-wgkwk.run.goorm.io/lodgings/random/");
     await console.log(response.data);
     setlocationInfo(response.data);
@@ -41,14 +46,16 @@ const SelectPage = () => {
           <ImgContainer>
             {Object.keys(locationInfo).map(lodging => {
               return (
-                <ImgBox key={lodging} onClick={handleClick}>
-                  <img src={locationInfo[lodging].src} alt={lodging.name} />
+                <ImgBox key={lodging}>
+                  <img src={locationInfo[lodging].src} alt={lodging.name} onClick={handleClick} />
                 </ImgBox>
               );
             })}
           </ImgContainer>
           <BtnBox>
-            <Btn>이전으로</Btn>
+            <Link to="/signup">
+              <Btn>이전</Btn>
+            </Link>
             <Btn>완료</Btn>
           </BtnBox>
         </SelectBox>
@@ -109,10 +116,13 @@ const ImgBox = styled.div`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 25px;
   overflow: hidden;
-  border: ${({ clicked }) => (clicked ? "3px solid black" : "none")};
   & > img {
     width: 100%;
     height: 100%;
+
+    .clicked {
+      border: 20px solid black;
+    }
   }
 `;
 
