@@ -2,8 +2,45 @@ import Btn from "./Btn";
 import styled from "@emotion/styled";
 import theme from "../styles/theme";
 import Signupimg from "../images/Signupimg.png";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const SignupForm = () => {
+  const [values, setValues] = useState({
+    id: "",
+    pw: "",
+    pwCheck: "",
+    goodPw: true,
+    nickName: "",
+    location: "",
+  });
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setValues(prevValues => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+
+  const handleCheck = (pw, pwCheck) => {
+    if (pw === pwCheck) {
+      setValues(prevValues => ({
+        ...prevValues,
+        goodPw: true,
+      }));
+    } else {
+      setValues(prevValues => ({
+        ...prevValues,
+        goodPw: false,
+      }));
+    }
+  };
+
+  useEffect(() => {
+    handleCheck(values.pw, values.pwCheck);
+  }, [values.pw, values.pwCheck]);
+
   return (
     <>
       <ImgBox>
@@ -17,6 +54,8 @@ const SignupForm = () => {
             <input
               type="text"
               name="id"
+              value={values.id}
+              onChange={handleChange}
               placeholder="영어와 숫자를 이용하여 3~6자로 생성해주세요"
             />
             <Btn className="checkBtn">중복 확인</Btn>
@@ -26,28 +65,48 @@ const SignupForm = () => {
             <input
               type="password"
               name="pw"
+              value={values.pw}
+              onChange={handleChange}
               placeholder="영어와 숫자와 특수문자를 이용하여 6~18자로 생성해주세요."
             />
           </div>
-          <div>
+          <div style={{ marginBottom: "30px" }}>
             <p>PW 확인</p>
             <input
+              style={{ marginBottom: "10px" }}
               type="password"
-              name="checkpw"
+              name="pwCheck"
+              value={values.pwCheck}
+              onChange={handleChange}
               placeholder="위에서 작성한 pw를 다시 한 번 작성해주세요."
             />
+            {values.goodPw || (
+              <div className="verifyPw">
+                <span>위에서 작성한 pw와 다릅니다.</span>
+              </div>
+            )}
           </div>
           <div>
             <p>닉네임</p>
-            <input type="text" name="nickname" placeholder="사용하실 닉네임을 작성해주세요." />
+            <input
+              type="text"
+              name="nickName"
+              value={values.nickName}
+              onChange={handleChange}
+              placeholder="사용하실 닉네임을 작성해주세요."
+            />
           </div>
           <div>
             <p>거주지역</p>
-            <input type="text" name="area" />
+            <input type="text" name="location" value={values.location} onChange={handleChange} />
           </div>
           <div className="btncontainer">
-            <Btn>이전</Btn>
-            <Btn>다음</Btn>
+            <Link to="/mainPage">
+              <Btn>이전</Btn>
+            </Link>
+            <Link to="/selectPage">
+              <Btn>다음</Btn>
+            </Link>
           </div>
         </Form>
       </FormBox>
@@ -133,8 +192,16 @@ const Form = styled.form`
     text-align: center;
   }
 
-  & > .btncontainer > button {
+  & > .btncontainer button {
     margin: 10px 75px 20px 75px;
+  }
+
+  & .verifyPw {
+    margin-left: 225px;
+    line-height: 10px;
+    font-family: ${theme.font_family.B};
+    font-size: ${theme.font_size.body2};
+    color: #ff0000;
   }
 `;
 
