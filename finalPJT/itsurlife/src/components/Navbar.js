@@ -104,8 +104,8 @@ const NavBox = styled.nav`
   & > div > .logolink > img {
     float: left;
     display: flex;
-    margin: 0;
-    height: 80px;
+    margin-top: 5px;
+    height: 60px;
     width: 120px;
     cursor: pointer;
   }
@@ -113,7 +113,7 @@ const NavBox = styled.nav`
     color: ${theme.color.logoPointColor};
   }
   & > div {
-    width: 95%;
+    width: 1876px;
     height: 80px;
     margin: auto;
     border-bottom: 3px solid ${theme.color.navColor};
