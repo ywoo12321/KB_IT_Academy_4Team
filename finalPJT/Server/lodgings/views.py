@@ -20,7 +20,7 @@ def norm_cal(a,b):
 # 파일 읽기
 def lodging_xlsx():
     path = os.path.join(os.getcwd(), 'theme', 'type.xlsx')
-    df = pd.read_excel(path)
+    df = pd.read_excel(path).copy()
     return df
 # 코사인 유사도 계산
 def cal(prefer):
@@ -145,6 +145,11 @@ def basic_recom(request):
 @permission_classes([AllowAny])
 def lodging_detail(request, lodging_id):
     lodging_file = lodging_xlsx()
+    result = {
+        'lodging' : [],
+        'sametheme': [],
+        'samelocation': [],
+    }
     # 해당 index가 file에 존재할 경우
     if lodging_id in lodging_file.index:
         lodging_data = {}
@@ -156,25 +161,9 @@ def lodging_detail(request, lodging_id):
         lodging_data["img1"] = lod.loc["img1"]
         lodging_data["img2"] = lod.loc["img2"]
         lodging_data["img3"] = lod.loc["img3"]
-        return JsonResponse([lodging_data], json_dumps_params={'ensure_ascii': False}, status=200)
+        result['lodging'].append(lodging_data)
 
-    # lodging_id가 file에 존재하지 않는 경우
-    else:
-        return JsonResponse(status=404, data={'status':'false','message':'해당하는 숙소는 존재하지 않습니다.'})
-
-
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def sub_lodging(request, lodging_id):
-    lodging_file = lodging_xlsx().copy()
-    result = {
-        'sametheme': [],
-        'samelocation': [],
-    }
-    # 해당 index가 file에 존재할 경우
-    if lodging_id in lodging_file.index:
-        # 현재 lodging의 theme값들을 가져옴
+        # 현재 lodging과 cos유사도가 가장 높은 숙소들을 가져옴
         now_theme = list(lodging_file.loc[lodging_id][2:9])
         theme_idx = list(cal(now_theme).index)
         for idx in theme_idx[1:]:
@@ -183,6 +172,7 @@ def sub_lodging(request, lodging_id):
             lodging['lodging_name'] = lodging_file.loc[idx]['lodging_name']
             lodging['lodging_img'] = lodging_file.loc[idx]['img1']
             result['sametheme'].append(lodging)
+
         # 현재 지역과 같은 지역에 있는 숙소를 random하게 추출
         now_location = lodging_file.loc[lodging_id]['address']
         condition = (lodging_file['address']==now_location)
@@ -195,25 +185,11 @@ def sub_lodging(request, lodging_id):
             lodging['lodging_name'] = lodging_file.loc[lod]['lodging_name']
             lodging['lodging_img'] = lodging_file.loc[lod]['img1']
             result['samelocation'].append(lodging)
-        return JsonResponse(result, json_dumps_params={'ensure_ascii': False}, status=200)
+        return JsonResponse([result], safe=False, json_dumps_params={'ensure_ascii': False}, status=200)
 
     # lodging_id가 file에 존재하지 않는 경우
     else:
         return JsonResponse(status=404, data={'status':'false','message':'해당하는 숙소는 존재하지 않습니다.'})
-    '''
-    sub_lodgings = {}
-    lodging = get_object_or_404(Lodging, pk=lodging_id)
-    # 현재 숙소를 제외한 같은 tag 20개를 sametheme로 넣어줌
-    lod_tag = Lodging.objects.exclude(pk=lodging_id).filter(tag=lodging.tag)[:20]
-    lod_tag_serializers = SimpleLodgingSerializer(lod_tag, many=True)
-    sub_lodgings['sametheme'] = lod_tag_serializers.data
-    # 현재 숙소를 제외한 같은 주소 20개를 sametheme로 넣어줌
-    # 주소 api 어떻게 받아오느냐에 따라 코드 변경
-    lod_add = Lodging.objects.exclude(pk=lodging_id).filter(lodging_address=lodging.lodging_address)[:20]
-    lod_add_serializers = SimpleLodgingSerializer(lod_add, many=True)
-    sub_lodgings['samelocation'] = lod_add_serializers.data
-    return JsonResponse(sub_lodgings, json_dumps_params={'ensure_ascii': False}, status=200)
-    '''
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
