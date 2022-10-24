@@ -21,9 +21,6 @@ const SignupForm = () => {
       ...prevValues,
       [name]: value,
     }));
-    if (name === "pw" || name === "pwCheck") {
-      setTimeout(handleCheck(), 100);
-    }
   };
 
   const handleCheck = (pw, pwCheck) => {
