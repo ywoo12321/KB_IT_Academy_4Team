@@ -118,27 +118,33 @@ def local_maker(personal_recommend, user_id):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def person_recom(request, user_id):
-    personal_recommend = {}
-    snipe_maker(personal_recommend, user_id)
-    local_maker(personal_recommend, user_id)
-    hot_maker(personal_recommend)
-    tag_maker(personal_recommend)
-    return JsonResponse([personal_recommend] ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
+    try:
+        personal_recommend = {}
+        snipe_maker(personal_recommend, user_id)
+        local_maker(personal_recommend, user_id)
+        hot_maker(personal_recommend)
+        tag_maker(personal_recommend)
+        return JsonResponse([personal_recommend] ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
+    except:
+        return JsonResponse([] ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
 
 # 비회원
 # basic = top10 + tag interior(random)
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def basic_recom(request):
-    basic_recommendation = {}
-    hot_maker(basic_recommendation)
-    # interior tag별 data 20개씩 추가
-    # interior_list = ['natural', 'modern', 'industrial', 'classic', 'popart', 'provence', 'asia']
-    tag_maker(basic_recommendation)
-    # 개수 확인을 위한 test
-    # for i in basic_recommendation.keys():
-    #     print(len(basic_recommendation[i]))
-    return JsonResponse([basic_recommendation], safe=False, json_dumps_params={'ensure_ascii': False}, status=200)
+    try:
+        basic_recommendation = {}
+        hot_maker(basic_recommendation)
+        # interior tag별 data 20개씩 추가
+        # interior_list = ['natural', 'modern', 'industrial', 'classic', 'popart', 'provence', 'asia']
+        tag_maker(basic_recommendation)
+        # 개수 확인을 위한 test
+        # for i in basic_recommendation.keys():
+        #     print(len(basic_recommendation[i]))
+        return JsonResponse([basic_recommendation], safe=False, json_dumps_params={'ensure_ascii': False}, status=200)
+    except:
+        return JsonResponse([basic_recommendation], safe=False, json_dumps_params={'ensure_ascii': False}, status=200)
 
 
 @api_view(['GET'])
@@ -196,11 +202,12 @@ def lodging_detail(request, lodging_id):
 def search_lodging(request, keyword):
     input_list = sum(list(map(lambda x : x.split(), keyword.split(','))), [])
     finds = []
-    check = '|'.join(input_list)
+    check = '|'.join(input_list) if len(input_list) > 1 else str(input_list[0])
+    num_check = [int(i) for i in input_list if i.isnumeric()]
     df_lodging = lodging_xlsx()
-    finds.extend(df_lodging[df_lodging['lodging_name'].str.contains(check)]['Unnamed: 0'].index.values)
-    finds.extend(df_lodging[df_lodging['address'].str.contains(check)]['Unnamed: 0'].index.values)
-    finds.extend(df_lodging[df_lodging['tag'].str.contains(check)]['Unnamed: 0'].index.values)
+    finds.extend(df_lodging[df_lodging['lodging_name'].str.contains(check)==True]['Unnamed: 0'].index.values)
+    finds.extend(df_lodging[df_lodging['address'].str.contains(check)==True]['Unnamed: 0'].index.values)
+    finds.extend(df_lodging[df_lodging['tag'].isin(num_check)==True]['Unnamed: 0'].index.values)
     find_index = sorted(list(set(finds)))
     answer = df_lodging.iloc[find_index].drop('Unnamed: 0', axis=1).reset_index().rename(columns={'index':'lodging_id', 'img1':'lodging_img' })[['lodging_id', 'lodging_name','tag','address', 'lodging_img']]
     return JsonResponse([answer.to_dict(orient='records')],safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
@@ -224,7 +231,7 @@ def random_maker(request):
         temp_dict['src'] = url + v + '/'+ random_dict[v].pop(random.choice(range(len(random_dict[v]))))
         temp_dict['tag'] = type_theme.index(v)
         result_dict['image'+str(i+1)] = temp_dict
-    return JsonResponse([result_dict], json_dumps_params={'ensure_ascii': False}, status=200)
+    return JsonResponse(result_dict, json_dumps_params={'ensure_ascii': False}, status=200)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
