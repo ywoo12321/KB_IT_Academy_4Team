@@ -12,15 +12,16 @@ const SelectPage = () => {
 
   const handleClick = event => {
     const item = event.target;
-    console.log(clicked);
     if (clicked.indexOf(item) !== -1) {
       clicked.splice(clicked.indexOf(item), 1);
       item.classList.remove("clicked");
-    } else if (clicked.length >= 5) {
       return;
-    } else {
-      item.classList.add("clicked");
     }
+    if (clicked.length >= 5) {
+      return;
+    }
+    console.log(clicked);
+    item.classList.add("clicked");
     setClicked([...clicked, item]);
   };
 
