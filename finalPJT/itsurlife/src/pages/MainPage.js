@@ -28,7 +28,7 @@ const MainPage = () => {
           console.log(LIST_INFO[lodgings]);
           return (
             <div key={lodgings}>
-              <BoxNameBox key={lodgings}>{LIST_INFO[lodgings]}</BoxNameBox>
+              <BoxNameBox>{LIST_INFO[lodgings]}</BoxNameBox>
               <ListBox key={lodgings}>
                 {Object.keys(main[lodgings]).map(lodging => {
                   return (
