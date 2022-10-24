@@ -4,9 +4,11 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "@emotion/styled";
 import theme from "../styles/theme";
+import mock from "./mock";
 
 const MainPage = () => {
-  const [mainPageInfo, setMainPageInfo] = useState([]);
+  const [mainPageInfo, setMainPageInfo] = useState([]); //서버로 받아오기
+  // const [mainPageInfo, setMainPageInfo] = useState(mock); //목으로 받아오기
   const fetchMainPage = async () => {
     //MainPage 정보 받아오기
     const response = await axios.get("https://kaybe-wgkwk.run.goorm.io/lodgings/recommendation");
@@ -26,7 +28,7 @@ const MainPage = () => {
           console.log(LIST_INFO[lodgings]);
           return (
             <div key={lodgings}>
-              <BoxNameBox>{LIST_INFO[lodgings]}</BoxNameBox>
+              <BoxNameBox key={lodgings}>{LIST_INFO[lodgings]}</BoxNameBox>
               <ListBox key={lodgings}>
                 {Object.keys(main[lodgings]).map(lodging => {
                   return (
