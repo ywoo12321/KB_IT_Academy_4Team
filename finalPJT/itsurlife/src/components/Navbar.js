@@ -113,7 +113,7 @@ const NavBox = styled.nav`
     color: ${theme.color.logoPointColor};
   }
   & > div {
-    width: 1886px;
+    width: 1876px;
     height: 80px;
     margin: auto;
     border-bottom: 3px solid ${theme.color.navColor};
