@@ -103,7 +103,10 @@ const Form = styled.form`
   & > div > input[name="pw"] {
     width: 500px;
   }
-
+  & > .btncontainer {
+    display: flex;
+    flex-direction: row;
+  }
   & > .btncontainer > button {
     margin: 30px 75px 20px 75px;
   }

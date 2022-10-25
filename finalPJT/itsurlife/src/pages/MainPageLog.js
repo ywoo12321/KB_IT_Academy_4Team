@@ -5,7 +5,8 @@ import axios from "axios";
 import styled from "@emotion/styled";
 import theme from "../styles/theme";
 import mock from "./mock";
-const id = "id1";
+const id = "admin";
+const nickName = "KbAcademy";
 const MainPageLog = () => {
   const [mainPageInfo, setMainPageInfo] = useState([]); //서버로 받아오기
   // const [mainPageInfo, setMainPageInfo] = useState(mock); //목으로 받아오기
@@ -53,8 +54,8 @@ const MainPageLog = () => {
   );
 };
 const LIST_INFO = {
-  0: `${id}님의 취향저격 숙소`,
-  1: `${id}님의 근처 숙소`,
+  0: `${nickName}님의 취향저격 숙소`,
+  1: `${nickName}님의 근처 숙소`,
   2: "#TOP10 인기숙소",
   3: "#모던한 감성 숙소",
   4: "#네츄럴한 감성 숙소",
