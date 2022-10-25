@@ -21,7 +21,7 @@ const Navbar = () => {
           <img src={logo} alt="logo" />
         </Link>
         <div className="searchbox">
-          <input type="text" placeholder="#모던 #경기도 등 원하는 검색어를 입력하세요." />
+          <input type="text" placeholder="모던, 경기, 충청 등 원하는 검색어를 입력하세요." />
           <img src={searchicon} alt="searchicon" />
         </div>
         <ul style={{ float: "right" }}>
@@ -100,7 +100,7 @@ const NavBox = styled.nav`
   & > div > .searchbox > input::placeholder {
     color: ${theme.color.gray};
     font-family: ${theme.font_family.N};
-    font-size: ${theme.font_size.h5};
+    font-size: ${theme.font_size.body1};
   }
   & > div > .searchbox > img {
     position: absolute;

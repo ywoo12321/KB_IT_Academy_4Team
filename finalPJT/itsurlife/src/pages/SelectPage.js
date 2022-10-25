@@ -57,7 +57,9 @@ const SelectPage = () => {
             <Link to="/signup">
               <Btn>이전</Btn>
             </Link>
-            <Btn>완료</Btn>
+            <Link to="/mainPage">
+              <Btn>완료</Btn>
+            </Link>
           </BtnBox>
         </SelectBox>
       </Container>
@@ -76,7 +78,9 @@ const SelectBox = styled.div`
   height: 90%;
   margin: 0 auto;
   margin-top: 58px;
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   box-shadow: 0px 6px 4px rgba(0, 0, 0, 0.1), inset 0px 8px 18px 8px rgba(82, 79, 74, 0.1);
   border-radius: 40px;
 `;
@@ -84,7 +88,7 @@ const SelectBox = styled.div`
 const TitleName = styled.h1`
   font-family: ${theme.font_family.T};
   font-size: ${theme.font_size.h1};
-  margin-left: 670px;
+  margin-left: 150px;
   padding-top: 65px;
   opacity: 1;
   color: black;
@@ -119,7 +123,7 @@ const ImgBox = styled.div`
   overflow: hidden;
   cursor: pointer;
   .clicked {
-    border: 10px solid ${theme.color.navColor};
+    border: 10px solid green;
     border-radius: 25px;
   }
   & > img {
@@ -129,8 +133,12 @@ const ImgBox = styled.div`
 `;
 
 const BtnBox = styled.div`
+  width: 395px;
+  height: 63px;
   text-align: center;
   margin-top: 100px;
+  display: flex;
+  justify-content: space-between;
   & > button {
     margin-left: 70px;
     margin-right: 70px;
