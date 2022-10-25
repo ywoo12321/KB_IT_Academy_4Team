@@ -168,7 +168,6 @@ def lodging_detail(request, lodging_id):
         lodging_data["img2"] = lod.loc["img2"]
         lodging_data["img3"] = lod.loc["img3"]
         result['lodging'].append(lodging_data)
-
         # 현재 lodging과 cos유사도가 가장 높은 숙소들을 가져옴
         now_theme = list(lodging_file.loc[lodging_id][2:9])
         theme_idx = list(cal(now_theme).index)
