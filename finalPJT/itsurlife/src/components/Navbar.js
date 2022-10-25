@@ -6,12 +6,22 @@ import logo from "../images/logo.png";
 import searchicon from "../images/searchicon.png";
 
 const Navbar = () => {
+  let searchData;
+  const [search, setSearch] = useState("");
   const [login, setLogin] = useState(false);
   const location = useLocation();
-  useEffect(() => {
-    console.log(location.pathname === "/mainPageLog");
-  }, [location]);
-
+  const getSearchData = () => {
+    searchData = document.getElementById("search").value;
+  };
+  const onchange = e => {
+    e.preventDefault();
+    setSearch(e.target.value);
+    searchData = search;
+  };
+  const checkData = e => {
+    console.log(searchData);
+  };
+  useEffect(() => {}, [location]);
   return (
     <NavBox>
       <div className="navbar">
@@ -22,10 +32,22 @@ const Navbar = () => {
           <img src={logo} width={111} height={60} alt="logo" />
         </Link>
         <SearchBox>
-          <SearchInput type="text" placeholder="모던, 경기, 충청 등 원하는 검색어를 입력하세요." />
+          <SearchInput
+            type="text"
+            id="search"
+            value={search}
+            placeholder="모던, 경기, 충청 등 원하는 검색어를 입력하세요."
+            onChange={onchange}
+          />
           <SearchImageBox>
-            <Link to="/searchPage">
-              <img src={searchicon} width={40} height={40} alt="searchicon" />
+            <Link to="/searchPage" state={searchData}>
+              <img
+                src={searchicon}
+                width={40}
+                height={40}
+                alt="searchicon"
+                onClick={() => checkData}
+              />
             </Link>
           </SearchImageBox>
         </SearchBox>
