@@ -10,5 +10,4 @@ urlpatterns = [
     path('random/', views.random_maker),
     path('image/<theme>/<keyword>', views.image_response),
     path('like/<user_id>/<int:lodging_id>', views.like),
-    path('dislike/<user_id>/<int:lodging_id>', views.dislike)
 ]
