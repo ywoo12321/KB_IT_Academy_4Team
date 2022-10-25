@@ -5,13 +5,16 @@ import axios from "axios";
 import styled from "@emotion/styled";
 import theme from "../styles/theme";
 import mock from "./mock";
-const id = "id1";
-const MainPage = () => {
+const id = "admin";
+const nickName = "KbAcademy";
+const MainPageLog = () => {
   const [mainPageInfo, setMainPageInfo] = useState([]); //서버로 받아오기
   // const [mainPageInfo, setMainPageInfo] = useState(mock); //목으로 받아오기
   const fetchMainPage = async () => {
-    //MainPage 정보 받아오기
-    const response = await axios.get("https://kaybe-wgkwk.run.goorm.io/lodgings/recommendation");
+    //MainPageLog 정보 받아오기
+    const response = await axios.get(
+      `https://kaybe-wgkwk.run.goorm.io/lodgings/recommendation/${id}`,
+    );
     await console.log(response.data);
     setMainPageInfo(response.data);
   };
@@ -51,14 +54,16 @@ const MainPage = () => {
   );
 };
 const LIST_INFO = {
-  0: "#TOP10 인기숙소",
-  1: "#모던한 감성 숙소",
-  2: "#네츄럴한 감성 숙소",
-  3: "#클래식한 감성 숙소",
-  4: "#아시아 감성 숙소",
-  5: "#프로방스 감성 숙소",
-  6: "#인더스트리얼 감성 숙소",
-  7: "#유니크한 감성 숙소",
+  0: `${nickName}님의 취향저격 숙소`,
+  1: `${nickName}님의 근처 숙소`,
+  2: "#TOP10 인기숙소",
+  3: "#모던한 감성 숙소",
+  4: "#네츄럴한 감성 숙소",
+  5: "#클래식한 감성 숙소",
+  6: "#아시아 감성 숙소",
+  7: "#프로방스 감성 숙소",
+  8: "#인더스트리얼 감성 숙소",
+  9: "#유니크한 감성 숙소",
 };
 
 const MainAdvertiseBox = styled.div`
@@ -150,4 +155,4 @@ const LastBox = styled.div`
     display: none;
   }
 `;
-export default MainPage;
+export default MainPageLog;

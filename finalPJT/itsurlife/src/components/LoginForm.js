@@ -25,7 +25,9 @@ const LoginForm = () => {
             <Link to="/mainPage">
               <Btn>홈으로</Btn>
             </Link>
-            <Btn>로그인</Btn>
+            <Link to="/mainPageLog">
+              <Btn>로그인</Btn>
+            </Link>
           </div>
         </Form>
       </FormBox>
@@ -101,7 +103,10 @@ const Form = styled.form`
   & > div > input[name="pw"] {
     width: 500px;
   }
-
+  & > .btncontainer {
+    display: flex;
+    flex-direction: row;
+  }
   & > .btncontainer > button {
     margin: 30px 75px 20px 75px;
   }
