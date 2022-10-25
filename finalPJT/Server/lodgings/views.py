@@ -118,15 +118,15 @@ def local_maker(personal_recommend, user_id):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def person_recom(request, user_id):
-    try:
-        personal_recommend = {}
-        snipe_maker(personal_recommend, user_id)
-        local_maker(personal_recommend, user_id)
-        hot_maker(personal_recommend)
-        tag_maker(personal_recommend)
-        return JsonResponse([personal_recommend] ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
-    except:
-        return JsonResponse([] ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
+   # try:
+    personal_recommend = {}
+    snipe_maker(personal_recommend, user_id)
+    local_maker(personal_recommend, user_id)
+    hot_maker(personal_recommend)
+    tag_maker(personal_recommend)
+    return JsonResponse([personal_recommend] ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
+   # except:
+    #    return JsonResponse([] ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
 
 # 비회원
 # basic = top10 + tag interior(random)

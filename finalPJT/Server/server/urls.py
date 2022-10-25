@@ -3,7 +3,6 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from django.contrib import admin
 from django.urls import path, include, re_path
-
 schema_view = get_schema_view(
    openapi.Info(
       title="야 여기어때요 API",
@@ -11,6 +10,7 @@ schema_view = get_schema_view(
       description="API 문서입니다.",
       terms_of_service="https://www.google.com/policies/terms/",
    ),
+   url = 'https://kaybe-wgkwk.run.goorm.io',
    public=True,
    permission_classes=[permissions.AllowAny],
 )
