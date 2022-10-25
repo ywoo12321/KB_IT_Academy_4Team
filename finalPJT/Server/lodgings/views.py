@@ -98,7 +98,6 @@ def local_maker(personal_recommend, user_id):
     list_lodging = lodging_xlsx()
     # 현재는 그냥 주소를 0~7 로 임의지정 해씀다
     user_address = Account.objects.filter(user_id = user_id).values_list('address')[0][0]
-    user_address = 2
     near_user = list(list_lodging[list_lodging['address']==user_address].index)
     random.shuffle(near_user)
     for i in near_user:
@@ -111,6 +110,7 @@ def local_maker(personal_recommend, user_id):
         temp['address'] = str(list_lodging.loc[i]['address'])
         temp['lodging_img'] = list_lodging.loc[i]['img1']
         local_list.append(temp)
+    print(local_list)
     personal_recommend[len(personal_recommend.keys())] = local_list
     return personal_recommend
 # 회원
@@ -263,30 +263,10 @@ def like(request, user_id, lodging_id):
             l.user_id_id = user_data["user_id"]
             l.lodging_id = lodging_id
             l.save()
+            return JsonResponse({'like': True, 'message': '성공'}, json_dumps_params={'ensure_ascii': False}, status=200)
         else:
-            raise Exception('이미 찜을 하였습니다.')
-        return JsonResponse({'result': "True", 'message': '성공'}, json_dumps_params={'ensure_ascii': False}, status=200)
-    except Exception as e:
-        return JsonResponse({'result': "False", 'message': str(e)}, json_dumps_params={'ensure_ascii': False}, status=200)
-
-
-@api_view(['DELETE'])
-@permission_classes([AllowAny])
-def dislike(request, user_id, lodging_id):
-    try : 
-        lodging_list = lodging_xlsx()
-        search = lodging_list[lodging_list['Unnamed: 0']==int(lodging_id)]
-        if len(search) == 0:
-            raise Exception('존재하지 않는 숙소입니다.')
-        user = Account.objects.filter(user_id=user_id)
-        if not user.exists():
-            raise Exception('존재하지 않는 유저입니다.')
-        likes = Like.objects.filter(user_id=user_id)
-        tt = set(map(lambda x : x[0], list(likes.values_list('lodging_id'))))
-        if lodging_id not in tt:
-            raise Exception('찜한 기록이 없습니다.')
-        my_like = likes.filter(lodging_id = lodging_id)
-        my_like.delete()
-        return JsonResponse({'result': "True", 'message': '성공'}, json_dumps_params={'ensure_ascii': False}, status=200)
+            my_like = likes.filter(lodging_id = lodging_id)
+            my_like.delete()
+            return JsonResponse({'like': False, 'message': '성공'}, json_dumps_params={'ensure_ascii': False}, status=200)
     except Exception as e:
         return JsonResponse({'result': "False", 'message': str(e)}, json_dumps_params={'ensure_ascii': False}, status=200)
