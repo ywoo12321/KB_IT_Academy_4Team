@@ -11,29 +11,34 @@ const Navbar = () => {
   useEffect(() => {
     console.log(location.pathname === "/mainPageLog");
   }, [location]);
+
   return (
     <NavBox>
       <div className="navbar">
         <Link
-          to={location.pathname === "/mainPageLog" ? "/mainPageLog" : "/mainPage"}
+          to={window.location.pathname.split("/").pop() === "Log" ? "/mainPage/Log" : "/mainPage"}
           className="logolink"
         >
-          <img src={logo} alt="logo" />
+          <img src={logo} width={111} height={60} alt="logo" />
         </Link>
-        <div className="searchbox">
-          <input type="text" placeholder="모던, 경기, 충청 등 원하는 검색어를 입력하세요." />
-          <img src={searchicon} alt="searchicon" />
-        </div>
+        <SearchBox>
+          <SearchInput type="text" placeholder="모던, 경기, 충청 등 원하는 검색어를 입력하세요." />
+          <SearchImageBox>
+            <Link to="/searchPage">
+              <img src={searchicon} width={40} height={40} alt="searchicon" />
+            </Link>
+          </SearchImageBox>
+        </SearchBox>
         <ul style={{ float: "right" }}>
-          {login && (
+          {window.location.pathname.split("/").pop() === "Log" ? (
             <li style={{ float: "left" }}>
-              <div id="toggle">
-                <input type="checkbox" id="switch" />
-                <label htmlFor="switch">Toggle</label>
-              </div>
+              <Link to="/mainPage">
+                <button className="btn" type="button">
+                  Log-out
+                </button>
+              </Link>
             </li>
-          )}
-          {!login && (
+          ) : (
             <li style={{ float: "left" }}>
               <Link to="/login">
                 <button className="btn" type="button">
@@ -42,27 +47,20 @@ const Navbar = () => {
               </Link>
             </li>
           )}
-          {login && (
+
+          {window.location.pathname.split("/").pop() === "Log" ? (
             <li style={{ float: "left" }}>
-              <button className="btn" type="button" onClick={() => setLogin(false)}>
-                Log-out
+              <button className="btn" type="button">
+                My Page
               </button>
             </li>
-          )}
-          {!login && (
+          ) : (
             <li style={{ float: "left" }}>
               <Link to="/signup">
                 <button className="btn" type="button">
                   Sign-up
                 </button>
               </Link>
-            </li>
-          )}
-          {login && (
-            <li style={{ float: "left" }}>
-              <button className="btn" type="button">
-                My Page
-              </button>
             </li>
           )}
         </ul>
@@ -197,4 +195,39 @@ const NavBox = styled.nav`
       width: 65px;
     }
   }
+`;
+const SearchBox = styled.div`
+  float: left;
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  width: 530px;
+  height: 60px;
+  margin-left: 520px;
+  margin-top: 10px;
+  border-radius: 40px;
+  border: 2px solid ${theme.color.navColor};
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+`;
+const SearchInput = styled.input`
+  display: inline;
+  width: 85%;
+  height: 50%;
+  border: none;
+  outline: none;
+  margin-left: 20px;
+  margin-top: 14px;
+  color: ${theme.color.main};
+  font-family: ${theme.font_family.N};
+  font-size: ${theme.font_size.h4};
+  ::placeholder {
+    color: ${theme.color.gray};
+    font-family: ${theme.font_family.N};
+    font-size: ${theme.font_size.body1};
+  }
+`;
+
+const SearchImageBox = styled.div`
+  width: 30px;
+  margin-top: 12px;
 `;
