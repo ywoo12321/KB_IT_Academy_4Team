@@ -183,8 +183,14 @@ def lodging_detail(request, lodging_id):
         now_location = lodging_file.loc[lodging_id]['address']
         condition = (lodging_file['address']==now_location)
         location_idx = list(lodging_file.loc[condition].drop(lodging_id).index)
-        # 20개 random하게 추출
-        lodg = random.sample(location_idx, 20)
+
+        # 20개 random하게 추출(해당 지역 숙소가 20개 미만일 경우 처리)
+        if len(location_idx) < 20 :
+            location_size = len(location_idx)
+        else:
+            location_size = 20
+
+        lodg = random.sample(location_idx, location_size)
         for lod in lodg:
             lodging = {}
             lodging['lodging_id'] = lod
