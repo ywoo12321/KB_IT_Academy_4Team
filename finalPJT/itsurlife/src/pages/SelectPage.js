@@ -12,15 +12,16 @@ const SelectPage = () => {
 
   const handleClick = event => {
     const item = event.target;
-    console.log(clicked);
     if (clicked.indexOf(item) !== -1) {
       clicked.splice(clicked.indexOf(item), 1);
       item.classList.remove("clicked");
-    } else if (clicked.length >= 5) {
       return;
-    } else {
-      item.classList.add("clicked");
     }
+    if (clicked.length >= 5) {
+      return;
+    }
+    console.log(clicked);
+    item.classList.add("clicked");
     setClicked([...clicked, item]);
   };
 
@@ -46,8 +47,8 @@ const SelectPage = () => {
           <ImgContainer>
             {Object.keys(locationInfo).map(lodging => {
               return (
-                <ImgBox key={lodging}>
-                  <img src={locationInfo[lodging].src} alt={lodging.name} onClick={handleClick} />
+                <ImgBox key={lodging} onClick={handleClick}>
+                  <img src={locationInfo[lodging].src} alt={lodging.name} />
                 </ImgBox>
               );
             })}
@@ -116,13 +117,14 @@ const ImgBox = styled.div`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 25px;
   overflow: hidden;
+  cursor: pointer;
+  .clicked {
+    border: 10px solid ${theme.color.navColor};
+    border-radius: 25px;
+  }
   & > img {
     width: 100%;
     height: 100%;
-
-    .clicked {
-      border: 20px solid black;
-    }
   }
 `;
 

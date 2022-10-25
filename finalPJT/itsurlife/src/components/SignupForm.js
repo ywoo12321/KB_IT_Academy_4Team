@@ -120,13 +120,13 @@ const ImgBox = styled.div`
   display: block;
   width: 35%;
   height: 1000px;
-  background: red;
   float: left;
 
   & > img {
     object-fit: cover;
-    width: 100%;
-    height: 100%;
+    width: 660px;
+    height: 1000px;
+    margin: 17px 17px 17px 17px;
   }
 `;
 
