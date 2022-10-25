@@ -1,6 +1,3 @@
-from msilib import type_binary
-from os import access
-from urllib import request
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
