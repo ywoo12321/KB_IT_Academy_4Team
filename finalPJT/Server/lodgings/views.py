@@ -21,6 +21,7 @@ def norm_cal(a,b):
 def lodging_xlsx():
     path = os.path.join(os.getcwd(), 'theme', 'type.xlsx')
     df = pd.read_excel(path).copy()
+    df['address'] = df['address'].str.strip()
     return df
 # 코사인 유사도 계산
 def cal(prefer):
