@@ -1,4 +1,3 @@
-from urllib import request
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
@@ -6,9 +5,14 @@ from rest_framework.permissions import AllowAny
 
 from .serializers import AccountSerializer, PreferSerializer
 from .models import Account, Prefer
-
+from lodgings.models import Like
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+
+from lodgings.views import cal, norm_cal, lodging_xlsx, type_theme
+import pandas as pd
+import numpy as np
+import random
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -23,7 +27,6 @@ def check_id(request, user_id):
 @permission_classes([AllowAny])
 def prefer_test(request, user_id):
     prefer = get_object_or_404(Prefer, user_id=user_id)
-    modern = prefer.prefer_modern
     content = {
         'modern' : prefer.prefer_modern,
         'provence' : prefer.prefer_provence,
@@ -114,3 +117,60 @@ def update_user_info(request):
             return JsonResponse({"message":"Fail, 수정 실패"}, json_dumps_params={'ensure_ascii': False}, status=200)
     else:
         return JsonResponse({"message":"Fail, 잘못된 요청"}, json_dumps_params={'ensure_ascii': False}, status=200)
+
+def prefer_to_df():
+    temp = ['user_id_id']
+    temp.extend(type_theme)
+    prefer = pd.DataFrame(list(Prefer.objects.all().values()))
+    prefer.columns = temp
+    for i in range(len(prefer.index)):
+        df_temp = likesum_to_df(str(prefer.iloc[i, 0]))
+        for k in type_theme:
+            prefer.loc[i,k] += int(df_temp[k])
+    return prefer.copy()
+
+def likesum_to_df(user_id):
+    try:
+        user_df = pd.DataFrame(list(Like.objects.filter(user_id=user_id).values()))
+        lodging_df = lodging_xlsx()
+        join_df = pd.DataFrame(lodging_df.merge(user_df, left_on='Unnamed: 0', right_on='lodging_id')[type_theme].sum())
+        return join_df.T
+    except:
+        return pd.DataFrame(data=[[0]*7], columns=type_theme)
+
+def user_cal(user_id):
+    df = prefer_to_df()
+    temp = df[df['user_id_id']!=user_id]
+    prefer = [temp[i][0] for i in type_theme]
+
+    df = df[df['user_id_id']!=user_id]
+    df['cosine'] = df[type_theme].apply(lambda x:norm_cal(prefer, x), axis=1)
+    df = df.sort_values(by='cosine', ascending=False)
+    return df
+
+def like_list(user_id):
+    try:
+        temp = list(Like.objects.filter(user_id_id=user_id).values_list('lodging_id'))
+        like_list = [x[0] for x in temp]
+        return like_list
+    except:
+        return []
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def user_recom(request, user_id):
+    try:
+        like_user = list(user_cal(user_id)['user_id_id'].iloc[:3].values)
+        df_lodging = lodging_xlsx()
+        result = {}
+        for i, v in enumerate(like_user):
+            temp = {}
+            temp['user_nickname'] = Account.objects.get(user_id=v).nickname
+            ran = temp['lodging_id'] = random.choice(like_list(v))
+            temp['lodging_name'] = df_lodging.loc[ran, 'lodging_name']
+            temp['img'] = df_lodging.iloc[ran, :]['img1']
+            result[i] = temp
+        return JsonResponse([result] ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
+    except Account.DoesNotExist:
+        # 존재하지 않는 경우에도 unique 이기 때문
+        return JsonResponse([] ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)

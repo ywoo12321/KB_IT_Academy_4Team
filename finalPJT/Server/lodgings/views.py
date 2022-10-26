@@ -98,7 +98,6 @@ def local_maker(personal_recommend, user_id):
     list_lodging = lodging_xlsx()
     # 현재는 그냥 주소를 0~7 로 임의지정 해씀다
     user_address = Account.objects.filter(user_id = user_id).values_list('address')[0][0]
-    user_address = 2
     near_user = list(list_lodging[list_lodging['address']==user_address].index)
     random.shuffle(near_user)
     for i in near_user:
@@ -111,6 +110,7 @@ def local_maker(personal_recommend, user_id):
         temp['address'] = str(list_lodging.loc[i]['address'])
         temp['lodging_img'] = list_lodging.loc[i]['img1']
         local_list.append(temp)
+    print(local_list)
     personal_recommend[len(personal_recommend.keys())] = local_list
     return personal_recommend
 # 회원
@@ -168,7 +168,6 @@ def lodging_detail(request, lodging_id):
         lodging_data["img2"] = lod.loc["img2"]
         lodging_data["img3"] = lod.loc["img3"]
         result['lodging'].append(lodging_data)
-
         # 현재 lodging과 cos유사도가 가장 높은 숙소들을 가져옴
         now_theme = list(lodging_file.loc[lodging_id][2:9])
         theme_idx = list(cal(now_theme).index)
