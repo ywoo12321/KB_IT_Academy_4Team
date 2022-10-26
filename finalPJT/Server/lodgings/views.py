@@ -99,7 +99,7 @@ def snipe_maker(url, personal_recommend, user_id):
 def local_maker(url, personal_recommend, user_id):
     local_list = []
     list_lodging = lodging_xlsx()
-    # 현재는 그냥 주소를 0~7 로 임의지정 해씀다
+
     user_address = Account.objects.filter(user_id = user_id).values_list('address')[0][0]
     near_user = list(list_lodging[list_lodging['address']==user_address].index)
     random.shuffle(near_user)
@@ -113,7 +113,7 @@ def local_maker(url, personal_recommend, user_id):
         temp['address'] = str(list_lodging.loc[i]['address'])
         temp['lodging_img'] = url + str(i)
         local_list.append(temp)
-    print(local_list)
+
     personal_recommend[len(personal_recommend.keys())] = local_list
     return personal_recommend
 # 회원
@@ -141,13 +141,8 @@ def basic_recom(request):
     url = request.build_absolute_uri().split('recommendation')[0]+'image2/'
     try:
         basic_recommendation = {}
-        hot_maker(url, basic_recommendation)
-        # interior tag별 data 20개씩 추가
-        # interior_list = ['natural', 'modern', 'industrial', 'classic', 'popart', 'provence', 'asia']
-        tag_maker(url, basic_recommendation)
-        # 개수 확인을 위한 test
-        # for i in basic_recommendation.keys():
-        #     print(len(basic_recommendation[i]))
+        hot_maker(basic_recommendation)
+        tag_maker(basic_recommendation)
         return JsonResponse([basic_recommendation], safe=False, json_dumps_params={'ensure_ascii': False}, status=200)
     except:
         print(url)
@@ -163,13 +158,18 @@ def lodging_detail(request, lodging_id):
         'sametheme': [],
         'samelocation': [],
     }
+    interior_tag = {
+        'natural' : '내추럴', 'modern' : '모던', 'industrial': '인더스트리얼',
+        'classic' : '클래식', 'popart' : '팝아트', 'provence' : '프로방스', 'asia': '아시아'
+    }
     # 해당 index가 file에 존재할 경우
     if lodging_id in lodging_file.index:
         lodging_data = {}
         lod = lodging_file.loc[lodging_id]
         lodging_data["lodging_id"] = lodging_id
         lodging_data["lodging_name"] = lod.loc["lodging_name"]
-        lodging_data["tag"] = lod.loc["tag"]
+        # tag 영어 한글로 변환(만약 없다면 그대로 return)
+        lodging_data["tag"] = interior_tag[lod.loc["tag"]] if lod.loc["tag"] in interior_tag.keys() else lod.loc["tag"]
         lodging_data["address"] = lod.loc["address"]
         lodging_data["img1"] = lod.loc["img1"]
         lodging_data["img2"] = lod.loc["img2"]
@@ -191,10 +191,7 @@ def lodging_detail(request, lodging_id):
         location_idx = list(lodging_file.loc[condition].drop(lodging_id).index)
 
         # 20개 random하게 추출(해당 지역 숙소가 20개 미만일 경우 처리)
-        if len(location_idx) < 20 :
-            location_size = len(location_idx)
-        else:
-            location_size = 20
+        location_size=len(location_idx) if len(location_idx) < 20 else 20
 
         lodg = random.sample(location_idx, location_size)
         for lod in lodg:
