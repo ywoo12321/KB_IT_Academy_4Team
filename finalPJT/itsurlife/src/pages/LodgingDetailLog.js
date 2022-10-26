@@ -22,7 +22,9 @@ const LodgingDetail = () => {
   //   console.log(lodgingDetailInfo);
   const fetchLodgingDetail = async () => {
     //     //LodgingDetail 정보 받아오기
-    const response = await axios.get(`https://kaybe-wgkwk.run.goorm.io/lodgings/${lodging_id}`);
+    const response = await axios.get(
+      `https://kaybe-wgkwk.run.goorm.io/lodgings/${lodging_id}/${id}`,
+    );
     console.log(response.data);
     setLodgingDetailInfo(response.data);
   };
@@ -36,7 +38,7 @@ const LodgingDetail = () => {
         const lodgingDetails = main.lodging[0];
         const sameLocation = main.samelocation;
         const sameTheme = main.sametheme;
-        console.log(main.samelocation);
+        console.log(lodgingDetails);
         return (
           <>
             <FirstBlock key={lodgingDetails.lodging_id}>
@@ -51,15 +53,7 @@ const LodgingDetail = () => {
                   <br />
                   <br />테 마 : # {lodgingDetails.tag}
                 </Text>
-                <HeartButton>
-                  <HeartImage
-                    src={
-                      likeList.includes(lodgingDetails.lodging_id)
-                        ? active_heart_btn
-                        : disabled_heart_btn
-                    }
-                  />
-                </HeartButton>
+                <HeartBtn isActiveHeartBtn={lodgingDetails.like} />
               </TextBox>
             </FirstBlock>
             <BoxNameBox>같은 테마의 숙소</BoxNameBox>
@@ -104,6 +98,18 @@ const LodgingDetail = () => {
   );
 };
 export default LodgingDetail;
+
+const HeartBtn = ({ isActiveHeartBtn }) => {
+  return (
+    <HeartButton>
+      <HeartImage
+        src={isActiveHeartBtn ? active_heart_btn : disabled_heart_btn}
+        width={40}
+        height={40}
+      />
+    </HeartButton>
+  );
+};
 const FirstBlock = styled.div`
   width: 1675px;
   height: 290px;
