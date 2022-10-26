@@ -119,17 +119,6 @@ def local_maker(url, personal_recommend, user_id):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def person_recom(request, user_id):
-<<<<<<< HEAD
-   # try:
-    personal_recommend = {}
-    snipe_maker(personal_recommend, user_id)
-    local_maker(personal_recommend, user_id)
-    hot_maker(personal_recommend)
-    tag_maker(personal_recommend)
-    return JsonResponse([personal_recommend] ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
-   # except:
-    #    return JsonResponse([] ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
-=======
     url = request.build_absolute_uri().split('recommendation')[0]+'image2/'
     try:
         personal_recommend = {}
