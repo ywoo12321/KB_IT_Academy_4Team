@@ -1,16 +1,15 @@
 from django.http import  JsonResponse, HttpResponse
-from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
-
 from django.db.models import Count
-
 from .models import Like
 from accounts.models import Prefer, Account
 import pandas as pd
 from numpy import dot
 from numpy.linalg import norm
 import os, random
+import glob
+from PIL import Image
 
 type_theme = ['modern', 'natural',  'classic', 'industrial', 'asia', 'provence', 'popart']
 
@@ -245,6 +244,9 @@ def image_response(request, theme, keyword):
         origin = [os.getcwd(), 'theme', 'traindata', theme, keyword]
         path = os.path.join(*origin)
         img = open(path, 'rb')
+        # img = Image.open(path).convert('RGB')
+        # img.show()
+        # im.save('tistory.webp', 'webp')
         return HttpResponse(img, content_type='image/jpeg')
     except:
         return JsonResponse({'img': "None"}, json_dumps_params={'ensure_ascii': False}, status=200)
