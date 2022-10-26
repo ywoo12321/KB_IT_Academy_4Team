@@ -212,7 +212,7 @@ def search_lodging(request, keyword):
     df_lodging = lodging_xlsx()
     finds.extend(df_lodging[df_lodging['lodging_name'].str.contains(check)==True]['Unnamed: 0'].index.values)
     finds.extend(df_lodging[df_lodging['address'].str.contains(check)==True]['Unnamed: 0'].index.values)
-    finds.extend(df_lodging[df_lodging['tag'].isin(num_check)==True]['Unnamed: 0'].index.values)
+    finds.extend(df_lodging[df_lodging['tag'].str.contains(check)==True]['Unnamed: 0'].index.values)
     find_index = sorted(list(set(finds)))
     answer = df_lodging.iloc[find_index].drop('Unnamed: 0', axis=1).reset_index().rename(columns={'index':'lodging_id', 'img1':'lodging_img' })[['lodging_id', 'lodging_name','tag','address', 'lodging_img']]
     return JsonResponse([answer.to_dict(orient='records')],safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
