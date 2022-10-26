@@ -11,6 +11,7 @@ import os, random
 import glob
 from PIL import Image
 import urllib.request
+from urllib.parse import quote_plus, unquote_plus, quote, urlsplit
 
 type_theme = ['modern', 'natural',  'classic', 'industrial', 'asia', 'provence', 'popart']
 # 코사인 계산 함수
@@ -277,7 +278,7 @@ def search_lodging(request, keyword):
     finds.extend(df_lodging[df_lodging['tag'].str.contains(check)==True]['Unnamed: 0'].index.values)
     find_index = sorted(list(set(finds)))
     answer = df_lodging.iloc[find_index].drop('Unnamed: 0', axis=1).reset_index().rename(columns={'index':'lodging_id', 'img1':'lodging_img' })[['lodging_id', 'lodging_name','tag','address', 'lodging_img']]
-    return JsonResponse([answer.to_dict(orient='records')],safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
+    return JsonResponse(answer.to_dict(orient='records'),safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -323,8 +324,12 @@ def image_response2(request, lodging_id):
         result = open(path+'.webp', 'rb')
         return HttpResponse(result, content_type='image/webp')
     except:
-        want_url = lodging_xlsx().iloc[lodging_id]['img1']    
-        urllib.request.urlretrieve(want_url, path)
+        want_url = lodging_xlsx().iloc[lodging_id]['img1']
+        url_list = urlsplit(want_url)
+        print(url_list)
+        query = url_list.scheme + "://"+ url_list.netloc + quote(url_list.path)+ '?' + url_list.query + url_list.fragment
+        print(query)
+        urllib.request.urlretrieve(query, path)
         img = Image.open(path).convert('RGB')
         img.save(path+'.webp', 'webp')
         result = open(path+'.webp', 'rb')
