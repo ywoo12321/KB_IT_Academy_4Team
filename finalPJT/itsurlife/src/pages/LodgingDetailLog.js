@@ -10,7 +10,6 @@ import account from "./userAccount";
 import mock from "./lodgingMock";
 import axios from "axios";
 
-let currentPath = "";
 const id = account.id;
 const nickName = account.nickName;
 const likeList = account.likeList;
@@ -18,13 +17,6 @@ const LodgingDetail = () => {
   const location = useLocation();
   const lodging_id = location.state;
   console.log(lodging_id);
-  let locationUrl = useLocation();
-
-  useEffect(() => {
-    if (currentPath === locationUrl.pathname) window.locationUrl.reload();
-
-    currentPath = locationUrl.pathname;
-  }, [locationUrl]);
   const [lodgingDetailInfo, setLodgingDetailInfo] = useState([]); //서버로 받아오기
   //   const [lodgingDetailInfo, setLodgingDetailInfo] = useState(mock); //목으로 받아오기
   //   console.log(lodgingDetailInfo);
@@ -75,8 +67,12 @@ const LodgingDetail = () => {
               {sameTheme.map((same, idx) => {
                 return (
                   <ImgBox key={same.lodging_id} first_img={idx === 0}>
-                    <LodgingName>{same.lodging_name}</LodgingName>
-                    <Link to="/lodgingDetail/Log" state={same.lodging_id}>
+                    <LodgingName key={same.lodging_id}>{same.lodging_name}</LodgingName>
+                    <Link
+                      to="/lodgingDetail/Log"
+                      onClick={() => window.location.reload()}
+                      state={same.lodging_id}
+                    >
                       <SameLodgingImage src={same.lodging_img} alt={same.lodging_name} />
                     </Link>
                   </ImgBox>
@@ -88,8 +84,12 @@ const LodgingDetail = () => {
               {sameLocation.map((same, idx) => {
                 return (
                   <ImgBox key={same.lodging_id} first_img={idx === 0}>
-                    <LodgingName>{same.lodging_name}</LodgingName>
-                    <Link to="/lodgingDetail/Log" state={same.lodging_id}>
+                    <LodgingName key={same.lodging_id}>{same.lodging_name}</LodgingName>
+                    <Link
+                      to="/lodgingDetail/Log"
+                      onClick={() => window.location.reload()}
+                      state={same.lodging_id}
+                    >
                       <SameLodgingImage src={same.lodging_img} alt={same.lodging_name} />
                     </Link>
                   </ImgBox>
