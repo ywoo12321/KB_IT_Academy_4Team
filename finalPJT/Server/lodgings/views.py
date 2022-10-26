@@ -10,9 +10,9 @@ from numpy.linalg import norm
 import os, random
 import glob
 from PIL import Image
+import urllib.request
 
 type_theme = ['modern', 'natural',  'classic', 'industrial', 'asia', 'provence', 'popart']
-
 # 코사인 계산 함수
 def norm_cal(a,b):
     return round(dot(a,b)/(norm(a)*norm(b)), 3)
@@ -29,7 +29,7 @@ def cal(prefer):
     return df.head(21)
 
 # 인기있는 숙소 top10
-def hot_maker(basic_recommendation):
+def hot_maker(url, basic_recommendation):
     lodging_file = lodging_xlsx()
     hot_list = (Like.objects.values('lodging_id').annotate(dcount=Count('lodging_id'))).order_by('-dcount')[:10]
     hot_lodging = []
@@ -39,13 +39,13 @@ def hot_maker(basic_recommendation):
         lodging_idx = i['lodging_id']
         lodging['lodging_id'] = lodging_idx
         lodging['lodging_name'] = lodging_file.loc[lodging_idx]['lodging_name']
-        lodging['lodging_img'] = lodging_file.loc[lodging_idx]['img1']
+        lodging['lodging_img'] = url+str(lodging_idx)
         hot_lodging.append(lodging)
     basic_recommendation[len(basic_recommendation.keys())] = hot_lodging
     return basic_recommendation
 
 # 태그별 숙소
-def tag_maker(basic_recommendation):
+def tag_maker(url, basic_recommendation):
     lodging_file = lodging_xlsx()
     for index, interior in enumerate(type_theme):
         # tag 별 가장 성향이 높은 30개의 index
@@ -57,13 +57,13 @@ def tag_maker(basic_recommendation):
             lodging = {}
             lodging['lodging_id'] = ran
             lodging['lodging_name'] = lodging_file.loc[ran]['lodging_name']
-            lodging['lodging_img'] = lodging_file.loc[ran]['img1']
+            lodging['lodging_img'] = url+str(ran)
             temp.append(lodging)
         basic_recommendation[len(basic_recommendation.keys())] = temp
     return basic_recommendation
 
 # 취향 저격 숙소
-def snipe_maker(personal_recommend, user_id):
+def snipe_maker(url, personal_recommend, user_id):
     theme = \
     ['prefer_modern',
     'prefer_natural',
@@ -73,18 +73,20 @@ def snipe_maker(personal_recommend, user_id):
     'prefer_provence',
     'prefer_unique',]
     list_lodging = lodging_xlsx()
+    list_lodging['img1'] = url + list_lodging['Unnamed: 0'].astype('str')
 
     temp = Prefer.objects.get(user_id_id=user_id).__dict__
     del temp['_state']
 
     user_prefer = [temp[i] for i in theme]
-
     user_like = pd.DataFrame(list(Like.objects.filter(user_id=user_id).values()))
     index_lod = list(user_like['lodging_id'].unique())
-    temp2 = list_lodging.iloc[index_lod, :].sum()[type_theme].values
 
+    temp2 = list_lodging.iloc[index_lod, :].sum()[type_theme].values
     user_prefer = [ x + y for x,y in zip(user_prefer, temp2)]
     answer = cal(user_prefer).drop('Unnamed: 0', axis=1).reset_index().rename(columns={'index':'lodging_id', 'img1':'lodging_img' })[['lodging_id', 'lodging_name','tag','address', 'lodging_img']]
+    img_list = answer.merge(list_lodging, left_on='lodging_name', right_on='lodging_name', sort=False)
+    answer['lodging_img'] = img_list['img1']
     personal_recommend[len(personal_recommend.keys())] = answer.to_dict(orient='records')
     return personal_recommend
 # 지역 기반 추천
@@ -92,7 +94,7 @@ def snipe_maker(personal_recommend, user_id):
  1. 주소를 전처리하는 과정이 필요함 oR 전처리해서 들어오기
  2. temp['address'] 에서 str를 지정했지만 주소가 문자열이 되면 그럴 필요가 없음.
 '''
-def local_maker(personal_recommend, user_id):
+def local_maker(url, personal_recommend, user_id):
     local_list = []
     list_lodging = lodging_xlsx()
     # 현재는 그냥 주소를 0~7 로 임의지정 해씀다
@@ -107,28 +109,26 @@ def local_maker(personal_recommend, user_id):
         temp['lodging_name'] = list_lodging.loc[i]['lodging_name']
         temp['tag'] = list_lodging.loc[i]['tag']
         temp['address'] = str(list_lodging.loc[i]['address'])
-        temp['lodging_img'] = list_lodging.loc[i]['img1']
+        temp['lodging_img'] = url + str(i)
         local_list.append(temp)
     print(local_list)
     personal_recommend[len(personal_recommend.keys())] = local_list
     return personal_recommend
-def url_convert(origin, key):
-    return origin.split('lodgings')[0] + 'lodings/image2/'+key
-
-    # request.build_absolute_uri().split('lodgings')[0]
 # 회원
 # basic + personal recommend
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def person_recom(request, user_id):
+    url = request.build_absolute_uri().split('recommendation')[0]+'image2/'
     try:
         personal_recommend = {}
-        snipe_maker(personal_recommend, user_id)
-        local_maker(personal_recommend, user_id)
-        hot_maker(personal_recommend)
-        tag_maker(personal_recommend)
+        snipe_maker(url, personal_recommend, user_id)
+        local_maker(url, personal_recommend, user_id)
+        hot_maker(url, personal_recommend)
+        tag_maker(url, personal_recommend)
         return JsonResponse([personal_recommend] ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
     except:
+        print(url)
         return JsonResponse([] ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
 
 # 비회원
@@ -136,17 +136,19 @@ def person_recom(request, user_id):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def basic_recom(request):
+    url = request.build_absolute_uri().split('recommendation')[0]+'image2/'
     try:
         basic_recommendation = {}
-        hot_maker(basic_recommendation)
+        hot_maker(url, basic_recommendation)
         # interior tag별 data 20개씩 추가
         # interior_list = ['natural', 'modern', 'industrial', 'classic', 'popart', 'provence', 'asia']
-        tag_maker(basic_recommendation)
+        tag_maker(url, basic_recommendation)
         # 개수 확인을 위한 test
         # for i in basic_recommendation.keys():
         #     print(len(basic_recommendation[i]))
         return JsonResponse([basic_recommendation], safe=False, json_dumps_params={'ensure_ascii': False}, status=200)
     except:
+        print(url)
         return JsonResponse([basic_recommendation], safe=False, json_dumps_params={'ensure_ascii': False}, status=200)
 
 
@@ -216,7 +218,6 @@ def lodging_detail_user(request, lodging_id, user_id):
     }
     # 해당 index가 file에 존재할 경우
     check = [x[0] for x in list(Like.objects.filter(user_id_id=user_id).values_list('lodging_id'))]
-    print(check)
     if lodging_id in lodging_file.index:
         lodging_data = {}
         lod = lodging_file.loc[lodging_id]
@@ -302,29 +303,32 @@ def random_maker(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def image_response(request, theme, keyword):
+    origin = [os.getcwd(), 'theme', 'traindata', theme, keyword]
+    path = os.path.join(*origin)
     try:
-        origin = [os.getcwd(), 'theme', 'traindata', theme, keyword]
-        path = os.path.join(*origin)
         img = Image.open(path).convert('RGB')
-        # img.show()
         img.save(path+'.webp', 'webp')
         result = open(path+'.webp', 'rb')
         return HttpResponse(result, content_type='image/webp')
     except:
-        return JsonResponse({'img': "None"}, json_dumps_params={'ensure_ascii': False}, status=200)
+        result = open(path+'.webp', 'rb')
+        return HttpResponse(result, content_type='image/webp')
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def image_response2(request, keyword):
+def image_response2(request, lodging_id):
+    origin = [os.getcwd(), 'theme', 'crawl', str(lodging_id)]
+    path = os.path.join(*origin) 
     try:
-        origin = [os.getcwd(), 'theme', 'crawl', keyword]
-        path = os.path.join(*origin)
-        img = Image.open(keyword).convert('RGB')
-        img.save(path+'.webp', 'webp')
         result = open(path+'.webp', 'rb')
         return HttpResponse(result, content_type='image/webp')
     except:
-        return JsonResponse({'img': "None"}, json_dumps_params={'ensure_ascii': False}, status=200)
+        want_url = lodging_xlsx().iloc[lodging_id]['img1']    
+        urllib.request.urlretrieve(want_url, path)
+        img = Image.open(path).convert('RGB')
+        img.save(path+'.webp', 'webp')
+        result = open(path+'.webp', 'rb')
+        return HttpResponse(result, content_type='image/webp')  
 
 @api_view(['GET'])
 @permission_classes([AllowAny])

@@ -10,6 +10,6 @@ urlpatterns = [
     path('search/<keyword>/', views.search_lodging),
     path('random/', views.random_maker),
     path('image/<theme>/<keyword>', views.image_response),
-    path('image2/keyword>', views.image_response2),
+    path('image2/<int:lodging_id>', views.image_response2),
     path('like/<user_id>/<int:lodging_id>', views.like),
 ]
