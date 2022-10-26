@@ -4,10 +4,16 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
+import active_heart_btn from "../images/active_heart_btn.png";
+import disabled_heart_btn from "../images/disabled_heart_btn.png";
+import account from "./userAccount";
 import mock from "./lodgingMock";
 import axios from "axios";
 
 let currentPath = "";
+const id = account.id;
+const nickName = account.nickName;
+const likeList = account.likeList;
 const LodgingDetail = () => {
   const location = useLocation();
   const lodging_id = location.state;
@@ -53,6 +59,15 @@ const LodgingDetail = () => {
                   <br />
                   <br />테 마 : # {lodgingDetails.tag}
                 </Text>
+                <HeartButton>
+                  <HeartImage
+                    src={
+                      likeList.includes(lodgingDetails.lodging_id)
+                        ? active_heart_btn
+                        : disabled_heart_btn
+                    }
+                  />
+                </HeartButton>
               </TextBox>
             </FirstBlock>
             <BoxNameBox>같은 테마의 숙소</BoxNameBox>
@@ -135,7 +150,17 @@ const Text = styled.div`
   font-family: ${theme.font_family.N};
   font-size: ${theme.font_size.h2};
 `;
-
+const HeartButton = styled.button`
+  margin-left: 57px;
+  margin-top: 15px;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+`;
+const HeartImage = styled.img`
+  width: 40px;
+  height: 40px;
+`;
 const SecondBox = styled.div`
   margin-top: 14px;
   width: 1920px;

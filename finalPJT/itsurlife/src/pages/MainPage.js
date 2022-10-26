@@ -1,5 +1,6 @@
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "@emotion/styled";
@@ -37,10 +38,12 @@ const MainPage = () => {
                   return (
                     <ImgBox key={main[lodgings][lodging].lodging_id} first_img={lodging === "0"}>
                       <LodgingName>{main[lodgings][lodging].lodging_name}</LodgingName>
-                      <LodgingImage
-                        src={main[lodgings][lodging].lodging_img}
-                        alt={main[lodgings][lodging].lodging_name}
-                      />
+                      <Link to="/lodgingDetail" state={main[lodgings][lodging].lodging_id}>
+                        <LodgingImage
+                          src={main[lodgings][lodging].lodging_img}
+                          alt={main[lodgings][lodging].lodging_name}
+                        />
+                      </Link>
                     </ImgBox>
                   );
                 })}
