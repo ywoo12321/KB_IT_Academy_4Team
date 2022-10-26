@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import mock from "./searchMock";
 import axios from "axios";
 
-const SearchPage = () => {
+const SearchPageLog = () => {
   const searchText = useLocation();
   const text = searchText.state;
   const [searchInfo, setSearchInfo] = useState([]);
@@ -19,7 +19,7 @@ const SearchPage = () => {
   useEffect(() => {
     fetchSearchInfo();
   }, []);
-  // const [searchInfo, setSearchInfo] = useState(mock);
+  //   const [searchInfo, setSearchInfo] = useState(mock);
   return (
     <>
       <Navbar />
@@ -30,7 +30,7 @@ const SearchPage = () => {
           return (
             <ImgBox key={search.lodging_id}>
               <LodgingName>{search.lodging_name}</LodgingName>
-              <Link to="/lodgingDetail" state={search.lodging_id}>
+              <Link to="/lodgingDetail/Log" state={search.lodging_id}>
                 <LodgingImage src={search.lodging_img} alt={search.lodging_name} />
               </Link>
             </ImgBox>
@@ -41,7 +41,7 @@ const SearchPage = () => {
     </>
   );
 };
-export default SearchPage;
+export default SearchPageLog;
 
 const BoxNameBox = styled.div`
   margin-top: 32px;
@@ -53,10 +53,10 @@ const BoxNameBox = styled.div`
 `;
 
 const SearchImageBox = styled.div`
-  width: 80%;
+  width: 93%;
   margin: 0 auto;
   margin-top: 58px;
-  margin-bottom: 58px;
+  margin: 0 auto;
   text-align: center;
   box-shadow: 0px 6px 4px rgba(0, 0, 0, 0.1), inset 0px 8px 18px 8px rgba(82, 79, 74, 0.1);
   border-radius: 40px;
@@ -71,10 +71,11 @@ const ImgBox = styled.div`
   width: 337px;
   height: 225px;
   position: relative;
-  margin: 0 auto;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 26px;
+  margin-right: 26px;
   margin-top: 45px;
+  margin-bottom: 45px;
+  margin-left: ${({ first_img }) => (first_img ? "130px" : "0px")};
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 25px;
   overflow: hidden;

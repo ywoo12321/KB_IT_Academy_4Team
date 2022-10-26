@@ -78,8 +78,6 @@ const SelectBox = styled.div`
   height: 90%;
   margin: 0 auto;
   margin-top: 58px;
-  display: flex;
-  flex-direction: column;
   align-items: center;
   box-shadow: 0px 6px 4px rgba(0, 0, 0, 0.1), inset 0px 8px 18px 8px rgba(82, 79, 74, 0.1);
   border-radius: 40px;

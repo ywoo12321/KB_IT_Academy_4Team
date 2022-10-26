@@ -6,6 +6,7 @@ import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
 import MainPageLog from "./MainPageLog";
 import SearchPage from "./SearchPage";
+import SearchPageLog from "./SearchPageLog";
 import LodgingDetail from "./LodgingDetail";
 import LodgingDetailLog from "./LodgingDetailLog";
 import { Global } from "@emotion/react";
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/selectPage" element={<SelectPage />} />
           <Route path="/searchPage" element={<SearchPage />} />
+          <Route path="/searchPage/Log" element={<SearchPageLog />} />
           <Route path="/lodgingDetail" element={<LodgingDetail />} />
           <Route path="/lodgingDetail/Log" element={<LodgingDetailLog />} />
         </Routes>

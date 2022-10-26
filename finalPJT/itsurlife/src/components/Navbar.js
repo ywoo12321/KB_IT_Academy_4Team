@@ -7,21 +7,24 @@ import searchicon from "../images/searchicon.png";
 
 const Navbar = () => {
   let searchData;
-  const [search, setSearch] = useState("");
-  const [login, setLogin] = useState(false);
+  const [search, setSearch] = useState();
+  const [getData, setGetData] = useState("");
   const location = useLocation();
-  const getSearchData = () => {
-    searchData = document.getElementById("search").value;
-  };
+
   const onchange = e => {
-    e.preventDefault();
     setSearch(e.target.value);
-    searchData = search;
-  };
-  const checkData = e => {
-    console.log(searchData);
+    setGetData(search);
   };
   useEffect(() => {}, [location]);
+  const reloadPage = e => {
+    if (
+      window.location.pathname === "/searchPage" ||
+      window.location.pathname === "/searchPage/Log"
+    ) {
+      window.location.reload();
+    }
+  };
+
   return (
     <NavBox>
       <div className="navbar">
@@ -40,14 +43,16 @@ const Navbar = () => {
             onChange={onchange}
           />
           <SearchImageBox>
-            <Link to="/searchPage" state={searchData}>
-              <img
-                src={searchicon}
-                width={40}
-                height={40}
-                alt="searchicon"
-                onClick={() => checkData}
-              />
+            <Link
+              to={
+                window.location.pathname.split("/").pop() === "Log"
+                  ? "/searchPage/Log"
+                  : "/searchPage"
+              }
+              onClick={reloadPage}
+              state={getData}
+            >
+              <img src={searchicon} width={40} height={40} alt="searchicon" />
             </Link>
           </SearchImageBox>
         </SearchBox>
