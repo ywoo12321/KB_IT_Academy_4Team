@@ -18,6 +18,7 @@ const LodgingDetail = () => {
   const lodging_id = location.state;
   console.log(lodging_id);
   const [lodgingDetailInfo, setLodgingDetailInfo] = useState([]); //서버로 받아오기
+  const [isLike, setIsLike] = useState();
   //   const [lodgingDetailInfo, setLodgingDetailInfo] = useState(mock); //목으로 받아오기
   //   console.log(lodgingDetailInfo);
   const fetchLodgingDetail = async () => {
@@ -25,12 +26,20 @@ const LodgingDetail = () => {
     const response = await axios.get(
       `https://kaybe-wgkwk.run.goorm.io/lodgings/${lodging_id}/${id}`,
     );
-    console.log(response.data);
     setLodgingDetailInfo(response.data);
+    setIsLike(response.data[0].lodging[0].like);
+  };
+
+  const toggleButton = async e => {
+    isLike === true ? setIsLike(false) : setIsLike(true);
+    const res = await axios.get(
+      `https://kaybe-wgkwk.run.goorm.io/lodgings/like/${id}/${lodging_id}`,
+    );
   };
   useEffect(() => {
     fetchLodgingDetail();
   }, []);
+
   return (
     <>
       <Navbar />
@@ -38,7 +47,8 @@ const LodgingDetail = () => {
         const lodgingDetails = main.lodging[0];
         const sameLocation = main.samelocation;
         const sameTheme = main.sametheme;
-        console.log(lodgingDetails);
+        const lodgingLike = lodgingDetailInfo[0].lodging[0].like;
+
         return (
           <>
             <FirstBlock key={lodgingDetails.lodging_id}>
@@ -53,7 +63,7 @@ const LodgingDetail = () => {
                   <br />
                   <br />테 마 : # {lodgingDetails.tag}
                 </Text>
-                <HeartBtn isActiveHeartBtn={lodgingDetails.like} />
+                <HeartBtn isActiveHeartBtn={isLike} onClick={toggleButton} />
               </TextBox>
             </FirstBlock>
             <BoxNameBox>같은 테마의 숙소</BoxNameBox>
@@ -99,11 +109,12 @@ const LodgingDetail = () => {
 };
 export default LodgingDetail;
 
-const HeartBtn = ({ isActiveHeartBtn }) => {
+const HeartBtn = ({ isActiveHeartBtn, onClick }) => {
   return (
     <HeartButton>
       <HeartImage
         src={isActiveHeartBtn ? active_heart_btn : disabled_heart_btn}
+        onClick={onClick}
         width={40}
         height={40}
       />
