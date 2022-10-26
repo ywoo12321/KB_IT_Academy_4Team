@@ -70,8 +70,17 @@ def like_chart(request, user_id):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def like_list(request, user_id):
+    lodging_list = lodging_xlsx()
     user_like = pd.DataFrame(list(Like.objects.filter(user_id=user_id).values()))['lodging_id']
-    return JsonResponse({'like': list(map(int, user_like.unique()))}, json_dumps_params={'ensure_ascii': False}, status=200)
+    like_list = list(Like.objects.filter(user_id=user_id).values_list('lodging_id'))
+    
+    result = {}
+    for i in like_list:
+        temp = {}
+        temp['name'] = lodging_list.loc[i[0], 'lodging_name']
+        temp['img'] = lodging_list.loc[i[0], 'img1']
+        result[i[0]] = temp
+    return JsonResponse({'like': result}, json_dumps_params={'ensure_ascii': False}, status=200)
 
 
 
