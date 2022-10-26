@@ -112,6 +112,10 @@ def local_maker(personal_recommend, user_id):
     print(local_list)
     personal_recommend[len(personal_recommend.keys())] = local_list
     return personal_recommend
+def url_convert(origin, key):
+    return origin.split('lodgings')[0] + 'lodings/image2/'+key
+
+    # request.build_absolute_uri().split('lodgings')[0]
 # 회원
 # basic + personal recommend
 @api_view(['GET'])
@@ -203,6 +207,64 @@ def lodging_detail(request, lodging_id):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
+def lodging_detail_user(request, lodging_id, user_id):
+    lodging_file = lodging_xlsx()
+    result = {
+        'lodging' : [],
+        'sametheme': [],
+        'samelocation': [],
+    }
+    # 해당 index가 file에 존재할 경우
+    check = [x[0] for x in list(Like.objects.filter(user_id_id=user_id).values_list('lodging_id'))]
+    print(check)
+    if lodging_id in lodging_file.index:
+        lodging_data = {}
+        lod = lodging_file.loc[lodging_id]
+        lodging_data["lodging_id"] = lodging_id
+        lodging_data["lodging_name"] = lod.loc["lodging_name"]
+        lodging_data["tag"] = lod.loc["tag"]
+        lodging_data["address"] = lod.loc["address"]
+        lodging_data["img1"] = lod.loc["img1"]
+        lodging_data["img2"] = lod.loc["img2"]
+        lodging_data["img3"] = lod.loc["img3"]
+        lodging_data["like"] = True if lodging_id in check else False
+        result['lodging'].append(lodging_data)
+        # 현재 lodging과 cos유사도가 가장 높은 숙소들을 가져옴
+        now_theme = list(lodging_file.loc[lodging_id][2:9])
+        theme_idx = list(cal(now_theme).index)
+        for idx in theme_idx[1:]:
+            lodging = {}
+            lodging['lodging_id'] = idx
+            lodging['lodging_name'] = lodging_file.loc[idx]['lodging_name']
+            lodging['lodging_img'] = lodging_file.loc[idx]['img1']
+            result['sametheme'].append(lodging)
+
+        # 현재 지역과 같은 지역에 있는 숙소를 random하게 추출
+        now_location = lodging_file.loc[lodging_id]['address']
+        condition = (lodging_file['address']==now_location)
+        location_idx = list(lodging_file.loc[condition].drop(lodging_id).index)
+
+        # 20개 random하게 추출(해당 지역 숙소가 20개 미만일 경우 처리)
+        if len(location_idx) < 20 :
+            location_size = len(location_idx)
+        else:
+            location_size = 20
+
+        lodg = random.sample(location_idx, location_size)
+        for lod in lodg:
+            lodging = {}
+            lodging['lodging_id'] = lod
+            lodging['lodging_name'] = lodging_file.loc[lod]['lodging_name']
+            lodging['lodging_img'] = lodging_file.loc[lod]['img1']
+            result['samelocation'].append(lodging)
+        return JsonResponse([result], safe=False, json_dumps_params={'ensure_ascii': False}, status=200)
+
+    # lodging_id가 file에 존재하지 않는 경우
+    else:
+        return JsonResponse(status=404, data={'status':'false','message':'해당하는 숙소는 존재하지 않습니다.'})
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
 def search_lodging(request, keyword):
     input_list = sum(list(map(lambda x : x.split(), keyword.split(','))), [])
     finds = []
@@ -243,11 +305,24 @@ def image_response(request, theme, keyword):
     try:
         origin = [os.getcwd(), 'theme', 'traindata', theme, keyword]
         path = os.path.join(*origin)
-        img = open(path, 'rb')
-        # img = Image.open(path).convert('RGB')
+        img = Image.open(path).convert('RGB')
         # img.show()
-        # im.save('tistory.webp', 'webp')
-        return HttpResponse(img, content_type='image/jpeg')
+        img.save(path+'.webp', 'webp')
+        result = open(path+'.webp', 'rb')
+        return HttpResponse(result, content_type='image/webp')
+    except:
+        return JsonResponse({'img': "None"}, json_dumps_params={'ensure_ascii': False}, status=200)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def image_response2(request, keyword):
+    try:
+        origin = [os.getcwd(), 'theme', 'crawl', keyword]
+        path = os.path.join(*origin)
+        img = Image.open(keyword).convert('RGB')
+        img.save(path+'.webp', 'webp')
+        result = open(path+'.webp', 'rb')
+        return HttpResponse(result, content_type='image/webp')
     except:
         return JsonResponse({'img': "None"}, json_dumps_params={'ensure_ascii': False}, status=200)
 
