@@ -123,7 +123,7 @@ const ImgBox = styled.div`
   overflow: hidden;
   cursor: pointer;
   .clicked {
-    border: 10px solid green;
+    border: 10px solid ${theme.color.footerColor};
     border-radius: 25px;
   }
   & > img {

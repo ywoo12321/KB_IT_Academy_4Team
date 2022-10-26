@@ -1,12 +1,14 @@
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import styled from "@emotion/styled";
 import theme from "../styles/theme";
+import account from "./userAccount";
 import mock from "./mock";
-const id = "admin";
-const nickName = "KbAcademy";
+const id = account.id;
+const nickName = account.nickName;
 const MainPageLog = () => {
   const [mainPageInfo, setMainPageInfo] = useState([]); //서버로 받아오기
   // const [mainPageInfo, setMainPageInfo] = useState(mock); //목으로 받아오기
@@ -37,10 +39,12 @@ const MainPageLog = () => {
                   return (
                     <ImgBox key={main[lodgings][lodging].lodging_id} first_img={lodging === "0"}>
                       <LodgingName>{main[lodgings][lodging].lodging_name}</LodgingName>
-                      <LodgingImage
-                        src={main[lodgings][lodging].lodging_img}
-                        alt={main[lodgings][lodging].lodging_name}
-                      />
+                      <Link to="/lodgingDetail/Log" state={main[lodgings][lodging].lodging_id}>
+                        <LodgingImage
+                          src={main[lodgings][lodging].lodging_img}
+                          alt={main[lodgings][lodging].lodging_name}
+                        />
+                      </Link>
                     </ImgBox>
                   );
                 })}

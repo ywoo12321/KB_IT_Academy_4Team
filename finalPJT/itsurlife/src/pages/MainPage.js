@@ -1,10 +1,13 @@
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "@emotion/styled";
 import theme from "../styles/theme";
+import sukso1 from "../images/sukso1.png";
 import mock from "./mock";
+import { symbol } from "prop-types";
 const id = "id1";
 const MainPage = () => {
   const [mainPageInfo, setMainPageInfo] = useState([]); //서버로 받아오기
@@ -22,10 +25,11 @@ const MainPage = () => {
   return (
     <>
       <Navbar />
-      <MainAdvertiseBox />
+      <MainAdvertiseBox>
+        <AdvertiseImage src={sukso1} alt="mainAdvertise" />
+      </MainAdvertiseBox>
       {mainPageInfo.map(main => {
         return Object.keys(main).map(lodgings => {
-          console.log(LIST_INFO[lodgings]);
           return (
             <div key={lodgings}>
               <BoxNameBox>{LIST_INFO[lodgings]}</BoxNameBox>
@@ -34,10 +38,12 @@ const MainPage = () => {
                   return (
                     <ImgBox key={main[lodgings][lodging].lodging_id} first_img={lodging === "0"}>
                       <LodgingName>{main[lodgings][lodging].lodging_name}</LodgingName>
-                      <LodgingImage
-                        src={main[lodgings][lodging].lodging_img}
-                        alt={main[lodgings][lodging].lodging_name}
-                      />
+                      <Link to="/lodgingDetail" state={main[lodgings][lodging].lodging_id}>
+                        <LodgingImage
+                          src={main[lodgings][lodging].lodging_img}
+                          alt={main[lodgings][lodging].lodging_name}
+                        />
+                      </Link>
                     </ImgBox>
                   );
                 })}
@@ -87,6 +93,11 @@ const BoxNameBox = styled.div`
   height: 32px;
   font-family: ${theme.font_family.B};
   font-size: ${theme.font_size.h3};
+`;
+const AdvertiseImage = styled.img`
+  object-fit: cover;
+  width: 1874px;
+  height: 800px;
 `;
 const LodgingImage = styled.img`
   width: 337px;

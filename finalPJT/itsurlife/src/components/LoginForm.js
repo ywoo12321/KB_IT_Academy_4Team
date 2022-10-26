@@ -25,7 +25,7 @@ const LoginForm = () => {
             <Link to="/mainPage">
               <Btn>홈으로</Btn>
             </Link>
-            <Link to="/mainPageLog">
+            <Link to="/mainPage/Log">
               <Btn>로그인</Btn>
             </Link>
           </div>
@@ -36,18 +36,17 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
-
 const ImgBox = styled.div`
   display: block;
   width: 35%;
   height: 1000px;
+  background: red;
   float: left;
 
   & > img {
     object-fit: cover;
-    width: 660px;
-    height: 1000px;
-    margin: 17px 17px 17px 17px;
+    width: 100%;
+    height: 100%;
   }
 `;
 
