@@ -130,7 +130,6 @@ def person_recom(request, user_id):
     except:
         print(url)
         return JsonResponse([] ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
->>>>>>> 021fd852e417d7e77f729d3d8b2657788a1c3cbd
 
 # 비회원
 # basic = top10 + tag interior(random)
