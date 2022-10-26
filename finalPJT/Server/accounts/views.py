@@ -22,16 +22,6 @@ def check_id(request, user_id):
     except Account.DoesNotExist:
         # 존재하지 않는 경우에도 unique 이기 때문
         return JsonResponse({"isUnique": True})
-    
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def prefer_test(request, user_id):
-    prefer = get_object_or_404(Prefer, user_id=user_id)
-    content = {
-        'modern' : prefer.prefer_modern,
-        'provence' : prefer.prefer_provence,
-    }
-    return JsonResponse(content)
 
 login_params = openapi.Schema(
     type=openapi.TYPE_OBJECT, 
