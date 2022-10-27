@@ -5,17 +5,8 @@ import pandas as pd
 import numpy as np
 from lodgings.models import Like
 from datetime import datetime
-from lodgings.views import lodging_xlsx
-
-tag_dic = {
-    0 : "natural", 
-    1 : "modern", 
-    2 : "industrial", 
-    3 : "classic", 
-    4 : "popart",
-    5 : "provence", 
-    6 : "asia", 
-}
+from lodgings.views import lodging_xlsx, type_theme
+tag_dic = {i:v for i,v in enumerate(type_theme)}
 def like_line(like_list):
     df = like_list.copy()
 
@@ -55,6 +46,9 @@ def like_rader(like_list):
 
     index = list_lodging.iloc[temp.index]['tag'].value_counts().index
     result = dict(zip(index, val))
+    for i in type_theme:
+        if result.get(i) == None:
+            result[i] = 0
     return result
 
 @api_view(['GET'])
@@ -65,7 +59,7 @@ def like_chart(request, user_id):
     result['line'] = like_line(user_like)
     result['pie'] = like_pie(user_like)
     result['rader'] = like_rader(user_like)
-    return JsonResponse({'graph': result}, json_dumps_params={'ensure_ascii': False}, status=200)
+    return JsonResponse(result, json_dumps_params={'ensure_ascii': False}, status=200)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
