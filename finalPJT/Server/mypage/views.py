@@ -7,6 +7,7 @@ from lodgings.models import Like
 from datetime import datetime
 from lodgings.views import lodging_xlsx, type_theme
 tag_dic = {i:v for i,v in enumerate(type_theme)}
+total_local = "강원 경기 경상 광주 부산 서울 울산 인천 전남 전라 제주 충청".split()
 def like_line(like_list):
     df = like_list.copy()
 
@@ -24,18 +25,27 @@ def like_line(like_list):
         temp_index = df[df['total_time']==i]['lodging_id'].value_counts().index
         lodging_object = df_lodging.loc[:,[*(tag_dic.values()), 'tag']]
         lodging_object = lodging_object.iloc[temp_index, :]
-        
+
         dict_top4[y+"-"+m] = \
            [int((lodging_object[lodging_object['tag']==tag_dic[i]]).count()[i]) for i in range(7)]
-    return dict_top4
+        result = {}
+    for i in type_theme:
+        result[i] = []
+    for key, value in dict_top4.items():
+        for i, v in enumerate(value):
+            result[tag_dic[i]].append(v)
+    return result
 
 def like_pie(like_list):
     df_lodging = lodging_xlsx()
     list_lod = list(like_list['lodging_id'].unique())
     list_lodging = df_lodging.loc[list_lod, ['lodging_name', 'address']]
-    # df_lodging = pd.DataFrame(list_lodging, columns=['name', 'address'])
+
     temp = list_lodging.groupby(by='address').count().reindex()['lodging_name']
     result = dict(zip(temp.index, temp))
+    for i in total_local:
+        if result.get(i) == None:
+            result[i] = 0
     return result
 
 def like_rader(like_list):

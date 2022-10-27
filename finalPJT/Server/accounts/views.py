@@ -130,9 +130,8 @@ def likesum_to_df(user_id):
 
 def user_cal(user_id):
     df = prefer_to_df()
-    temp = df[df['user_id_id']!=user_id]
-    prefer = [temp[i][0] for i in type_theme]
-
+    temp = df[df['user_id_id']==user_id]
+    prefer = [int(temp[i]) for i in type_theme]
     df = df[df['user_id_id']!=user_id]
     df['cosine'] = df[type_theme].apply(lambda x:norm_cal(prefer, x), axis=1)
     df = df.sort_values(by='cosine', ascending=False)
