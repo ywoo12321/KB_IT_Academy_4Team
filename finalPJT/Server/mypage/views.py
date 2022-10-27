@@ -13,7 +13,7 @@ def like_line(like_list):
 
     dt_now = datetime.now().year * 12 + datetime.now().month
     df['total_time'] = df['like_date'].astype('datetime64').dt.year * 12 + df['like_date'].astype('datetime64').dt.month
-    temp = df[(df['total_time'] < dt_now) & (df['total_time'] > dt_now-4)]
+    temp = df[(df['total_time'] < dt_now) & (df['total_time'] > dt_now-5)]
     top4 = np.sort(temp['total_time'].unique())[:4]
     dict_top4 = {}
     df_lodging = lodging_xlsx()
@@ -28,7 +28,7 @@ def like_line(like_list):
 
         dict_top4[y+"-"+m] = \
            [int((lodging_object[lodging_object['tag']==tag_dic[i]]).count()[i]) for i in range(7)]
-        result = {}
+    result = {}
     for i in type_theme:
         result[i] = []
     for key, value in dict_top4.items():
