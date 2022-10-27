@@ -132,14 +132,11 @@ def prepare_image(image, target_width=224, target_height=224, max_zoom=0.2):
     return image.astype(np.float32) / 255
 
 def make_prediction(model, img_path):
-    # model = load_model()
     origin = [os.getcwd(), 'theme', 'dataset2_pkl.pkl']
     with open(os.path.join(*origin), 'rb') as f:
         class_dict = pickle.load(f)
-    # print(class_dict)
     img_tmp = cv2.imread(img_path, 1)
     image = cv2.cvtColor(img_tmp, cv2.COLOR_BGR2RGB)
-    # plt.imshow(image)
     image = prepare_image(image)
     images = []
     images.append(image)
@@ -170,7 +167,7 @@ def image_class(request):
         file = request.data['image']
         fs = FileSystemStorage()
     fs.save(agumon, file)
-    # origin = [os.getcwd(), 'theme', 'checkpoints']
+    origin = [os.getcwd(), 'theme', 'checkpoints']
     IMG_SIZE = 224
     conv_base = MobileNet(weights='imagenet',
                     include_top=False,
@@ -184,7 +181,7 @@ def image_class(request):
         Dense(500, activation='relu'),
         Dense(7, activation='softmax'),
     ])
-    # latest = latest_checkpoint(os.path.join(*origin))
-    # model.load_weights(latest)
+    latest = latest_checkpoint(os.path.join(*origin))
+    model.load_weights(latest)
     result = make_prediction(model, agumon)
     return JsonResponse({'like': result}, json_dumps_params={'ensure_ascii': False}, status=200)
