@@ -6,5 +6,5 @@ app_name = 'mypage'
 urlpatterns = [
     path('chart/<user_id>', views.like_chart),
     path('like/<user_id>', views.like_list),
-
+    path('image', views.image_class),
 ]
