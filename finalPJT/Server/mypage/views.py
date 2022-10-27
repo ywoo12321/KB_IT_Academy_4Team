@@ -7,7 +7,7 @@ from lodgings.models import Like
 from datetime import datetime
 from lodgings.views import lodging_xlsx, type_theme
 tag_dic = {i:v for i,v in enumerate(type_theme)}
-total_local = "강원 경기 경상 광주 부산 서울 울산 인천 전남 전라 제주 충청".split()
+total_local = "강원 경기 경상 광주 부산 서울 울산 인천 전라 제주 충청".split()
 def like_line(like_list):
     df = like_list.copy()
 

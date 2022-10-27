@@ -157,7 +157,8 @@ def user_recom(request, user_id):
             temp['user_nickname'] = Account.objects.get(user_id=v).nickname
             ran = temp['lodging_id'] = random.choice(like_list(v))
             temp['lodging_name'] = df_lodging.loc[ran, 'lodging_name']
-            temp['img'] = df_lodging.iloc[ran, :]['img1']
+            # temp['img'] = df_lodging.iloc[ran, :]['img1']
+            temp['img'] = request.build_absolute_uri().replace('accounts', 'lodgings').replace('recommendation','image2').split(user_id)[0] + str(ran)
             result[i] = temp
         return JsonResponse([result] ,safe=False, json_dumps_params={'ensure_ascii': False},  status=200)
     except Account.DoesNotExist:
