@@ -141,11 +141,10 @@ def basic_recom(request):
     url = request.build_absolute_uri().split('recommendation')[0]+'image2/'
     try:
         basic_recommendation = {}
-        hot_maker(basic_recommendation)
-        tag_maker(basic_recommendation)
+        hot_maker(url, basic_recommendation)
+        tag_maker(url, basic_recommendation)
         return JsonResponse([basic_recommendation], safe=False, json_dumps_params={'ensure_ascii': False}, status=200)
     except:
-        print(url)
         return JsonResponse([basic_recommendation], safe=False, json_dumps_params={'ensure_ascii': False}, status=200)
 
 

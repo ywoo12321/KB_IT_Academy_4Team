@@ -38,7 +38,7 @@ def like_line(like_list):
            [int((lodging_object[lodging_object['tag']==tag_dic[i]]).count()[i]) for i in range(7)]
     return dict_top4
 
-def like_rader(like_list):
+def like_pie(like_list):
     df_lodging = lodging_xlsx()
     list_lod = list(like_list['lodging_id'].unique())
     list_lodging = df_lodging.loc[list_lod, ['lodging_name', 'address']]
@@ -47,7 +47,7 @@ def like_rader(like_list):
     result = dict(zip(temp.index, temp))
     return result
 
-def like_pie(like_list):
+def like_rader(like_list):
     temp = like_list.groupby(by='lodging_id').count().reindex()['id']
     list_lodging = lodging_xlsx()
     val = list_lodging.iloc[temp.index]['tag'].value_counts().values
