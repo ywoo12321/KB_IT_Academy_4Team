@@ -7,7 +7,6 @@ import numpy as np
 from lodgings.models import Like
 from datetime import datetime
 from lodgings.views import lodging_xlsx, type_theme
-import base64
 
 import pickle, cv2
 import os
